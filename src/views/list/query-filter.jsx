@@ -75,15 +75,15 @@ const QueryFilter = {
         //   },
         //   value: this.queryParam[item.dataIndex]
         // }
-        return <a-input v-model={this.queryParam[item.dataIndex]} placeholder="请输入" />
+        return <a-input v-model={this.queryParam[item.dataIndex]} placeholder={ this.$t('tableForm.inputPlaceholder') } />
         // return <a-input {...asyncProps} placeholder="请输入" />
       }
       const proFormNumber = (item) => {
-        return <a-input-number v-model={this.queryParam[item.dataIndex]} class="search-input" />
+        return <a-input-number v-model={this.queryParam[item.dataIndex]} class="search-input" placeholder={ this.$t('tableForm.inputPlaceholder') } />
       }
 
       const proFormDatePicker = (item) => {
-        return <a-date-picker type="data" show-time v-model={this.queryParam[item.dataIndex]} placeholder="请输入" class="search-input" />
+        return <a-date-picker type="data" show-time v-model={this.queryParam[item.dataIndex]} placeholder={ this.$t('tableForm.selectPlaceholder') } class="search-input" />
       }
 
       const proFormSelect = (item) => {
@@ -92,13 +92,13 @@ const QueryFilter = {
         })
 
       const value = this.queryParam[item.dataIndex]
-      return <Select placeholder="请选择" value={value} onSelect={(value) => { this.handleChange(value, item) }}>
+      return <Select placeholder={ this.$t('tableForm.selectPlaceholder') } value={value} onSelect={(value) => { this.handleChange(value, item) }}>
         {options}
         </Select>
       }
 
       // const proFormTimePicker = (item) => {
-      //   return <a-time-picker use12-hours />
+      //   return <a-time-picker use12-hours placeholder={ this.$t('tableForm.selectPlaceholder') }/>
       // }
       // const advancedRender = bottomArr.map((item) => <fragment></fragment> )
       const formTypeMap = {
