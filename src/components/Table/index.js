@@ -148,13 +148,8 @@ export default {
     }) || false
     this.needTotalList = this.initTotalList(this.columns)
     this.columns.map((item, index) => {
-      // const temp = item
       if (item.tip) {
-      //   temp.title = <span>{temp.title} <a-tooltip title={ temp.tip }>
-      //   <a-icon type="exclamation-circle" />
-      // </a-tooltip></span>
         item.scopedSlots = { ...item.scopedSlots, title: `custom-${index}` }
-        // item.slot = { title: 'customTitle' }
         item['titleOld'] = item.title
         delete item.title
       }
