@@ -20,11 +20,10 @@
           我们推荐使用这种方式进行 LOGO 和 title 自定义
     -->
     <template v-slot:menuHeaderRender>
-      <div>
-        <logo-svg />
-        <h1>{{ title }}</h1>
-      </div>
+      <logo-svg />
+      <h1>{{ title }}</h1>
     </template>
+
     <!-- 1.0.0+ 版本 pro-layout 提供 API,
           增加 Header 左侧内容区自定义
     -->
@@ -38,7 +37,8 @@
 
     <setting-drawer :settings="settings" @change="handleSettingChange">
       <div style="margin: 12px 0;">
-        This is SettingDrawer custom footer content.
+        {{ i18nRender('app.setting.themecolor.usertip') }}
+        <!-- This is SettingDrawer custom footer content. -->
       </div>
     </setting-drawer>
     <template v-slot:rightContentRender>
@@ -53,7 +53,8 @@
 </template>
 
 <script>
-import { SettingDrawer, updateTheme } from '@ant-design-vue/pro-layout'
+// import { SettingDrawer, updateTheme } from '@ant-design-vue/pro-layout'
+import { SettingDrawer, updateTheme } from '@/pro-layout/src/index'
 import { i18nRender } from '@/locales'
 import { mapState } from 'vuex'
 import { CONTENT_WIDTH_TYPE, SIDEBAR_TYPE, TOGGLE_MOBILE_TYPE } from '@/store/mutation-types'
@@ -96,6 +97,14 @@ export default {
         fixedHeader: defaultSettings.fixedHeader,
         fixSiderbar: defaultSettings.fixSiderbar,
         colorWeak: defaultSettings.colorWeak,
+        multiTab: defaultSettings.multiTab,
+        splitMenus: true,
+        footer: defaultSettings.footer,
+        regionalSettingsMenu: defaultSettings.regionalSettingsMenu,
+        regionalSettingsMenuHeader: defaultSettings.regionalSettingsMenuHeader,
+        regionalSettingsHeader: defaultSettings.regionalSettingsHeader,
+        multiTabFixed: defaultSettings.multiTabFixed,
+        transitionName: defaultSettings.transitionName,
 
         hideHintAlert: false,
         hideCopyButton: false
@@ -104,7 +113,30 @@ export default {
       query: {},
 
       // 是否手机模式
-      isMobile: false
+      isMobile: false,
+      footerData: {
+        copyright: `${new Date().getFullYear()} 蚂蚁集团体验技术部出品`,
+        links: [
+          {
+            key: 'Ant Design Pro',
+            title: 'Ant Design Pro',
+            href: 'https://pro.ant.design',
+            blankTarget: true
+          },
+          {
+            key: 'github',
+            title: <a-icon type="github" />,
+            href: 'https://github.com/ant-design/ant-design-pro',
+            blankTarget: true
+          },
+          {
+            key: 'Ant Design',
+            title: 'Ant Design',
+            href: 'https://ant.design',
+            blankTarget: true
+          }
+        ]
+      }
     }
   },
   computed: {
@@ -166,9 +198,35 @@ export default {
         case 'contentWidth':
           this.settings[type] = value
           break
+        case 'splitMenus':
+          this.settings[type] = value
+          break
+        case 'footer':
+          this.settings[type] = value
+          break
+        case 'regionalSettingsMenu':
+          this.settings[type] = value
+          break
+        case 'regionalSettingsMenuHeader':
+          this.settings[type] = value
+          break
+        case 'regionalSettingsHeader':
+          this.settings[type] = value
+          break
+        case 'multiTabFixed':
+          this.settings[type] = value
+          // this.settings.fixedHeader = true
+          break
+        case 'transitionName':
+          this.settings.transitionName = value
+          break
         case 'layout':
+          console.log('改变布局', value)
           if (value === 'sidemenu') {
             this.settings.contentWidth = CONTENT_WIDTH_TYPE.Fluid
+          } else if (value === 'mixmenu') {
+            this.settings.fixSiderbar = true
+            this.settings.contentWidth = CONTENT_WIDTH_TYPE.Fixed
           } else {
             this.settings.fixSiderbar = false
             this.settings.contentWidth = CONTENT_WIDTH_TYPE.Fixed

@@ -50,7 +50,12 @@ const constantRouterComponents = {
   'SecuritySettings': () => import('@/views/account/settings/Security'),
   'CustomSettings': () => import('@/views/account/settings/Custom'),
   'BindingSettings': () => import('@/views/account/settings/Binding'),
-  'NotificationSettings': () => import('@/views/account/settings/Notification')
+  'NotificationSettings': () => import('@/views/account/settings/Notification'),
+
+  // editor
+  'Flow': () => import(/* webpackChunkName: "fail" */ '@/views/exception/Flow'),
+  'Mind': () => import(/* webpackChunkName: "fail" */ '@/views/exception/Mind'),
+  'Koni': () => import(/* webpackChunkName: "fail" */ '@/views/exception/Koni'),
 
   // 'TestWork': () => import(/* webpackChunkName: "TestWork" */ '@/views/dashboard/TestWork')
 }

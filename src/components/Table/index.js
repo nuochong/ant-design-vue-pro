@@ -1,7 +1,15 @@
 import T from 'ant-design-vue/es/table/Table'
 import get from 'lodash.get'
+import { EventBus } from '../event-bus'
+import { Ellipsis } from '@/components'
+import 'ant-design-vue/es/icon/style'
+import Icon from 'ant-design-vue/es/icon'
+import './table.css'
 
 export default {
+  components: {
+    Ellipsis
+  },
   data () {
     return {
       needTotalList: [],
@@ -11,7 +19,30 @@ export default {
 
       localLoading: false,
       localDataSource: [],
-      localPagination: Object.assign({}, this.pagination)
+      localPagination: Object.assign({}, this.pagination),
+
+      columnsNew: {},
+      statusMap: {},
+      queryParam: {},
+      customTemplate: {}
+      // statusMap: {
+      //   0: {
+      //     status: 'default',
+      //     text: '关闭'
+      //   },
+      //   1: {
+      //     status: 'processing',
+      //     text: '运行中'
+      //   },
+      //   2: {
+      //     status: 'success',
+      //     text: '已上线'
+      //   },
+      //   3: {
+      //     status: 'error',
+      //     text: '异常'
+      //   }
+      // }
     }
   },
   props: Object.assign({}, T.props, {
@@ -106,6 +137,7 @@ export default {
       })
     }
   },
+
   created () {
     const { pageNo } = this.$route.params
     const localPageNum = this.pageURI && (pageNo && parseInt(pageNo)) || this.pageNum
@@ -115,9 +147,47 @@ export default {
       showSizeChanger: this.showSizeChanger
     }) || false
     this.needTotalList = this.initTotalList(this.columns)
+    this.columns.map((item, index) => {
+      // const temp = item
+      if (item.tip) {
+      //   temp.title = <span>{temp.title} <a-tooltip title={ temp.tip }>
+      //   <a-icon type="exclamation-circle" />
+      // </a-tooltip></span>
+        item.scopedSlots = { ...item.scopedSlots, title: `custom-${index}` }
+        // item.slot = { title: 'customTitle' }
+        item['titleOld'] = item.title
+        delete item.title
+      }
+      const { valueEnum, ellipsis, copyable } = item
+      if (valueEnum) {
+        this.statusMap = valueEnum
+        item.scopedSlots = { ...item.scopedSlots, customRender: 'custom-cell-status' }
+      }
+
+      if (ellipsis && copyable) {
+        console.log('混合')
+        item.scopedSlots = { ...item.scopedSlots, customRender: 'custom-ellipsis-copyable' }
+      } else if (ellipsis) {
+        item.scopedSlots = { ...item.scopedSlots, customRender: 'custom-ellipsis' }
+      } else if (copyable) {
+        item.scopedSlots = { ...item.scopedSlots, customRender: 'custom-copyable' }
+      }
+
+      return item
+    })
+    this.handleSearch()
     this.loadData()
   },
+  mounted () {
+  },
   methods: {
+    /** 处理搜索 */
+    handleSearch () {
+      console.log('处理搜索')
+      EventBus.$on('searchData', (queryParam) => {
+        this.queryParam = queryParam
+      })
+    },
     /**
      * 表格重新加载方法
      * 如果参数为 true, 则强制刷新到第一页
@@ -152,7 +222,7 @@ export default {
         ...filters
       }
       )
-      const result = this.data(parameter)
+      const result = this.data(parameter, this.queryParam)
       // 对接自己的通用数据接口需要修改下方代码中的 r.pageNo, r.totalCount, r.data
       // eslint-disable-next-line
       if ((typeof result === 'object' || typeof result === 'function') && typeof result.then === 'function') {
@@ -264,9 +334,15 @@ export default {
           </template>
         </a-alert>
       )
+    },
+
+    statusFilter (type) {
+      return this.statusMap[type].text
+    },
+    statusTypeFilter (type) {
+      return this.statusMap[type].status
     }
   },
-
   render () {
     const props = {}
     const localKeys = Object.keys(this.$data)
@@ -300,8 +376,84 @@ export default {
       this[k] && (props[k] = this[k])
       return props[k]
     })
+    // props.columns = this.columnsNew
+
+    // const scopedSlots = {
+    //   customTitle: ({ title, tip }) => {
+    //     return (
+    //       <span>
+    //       规则编号{title}
+    //       <a-tooltip title={tip}>
+    //         <Icon type="exclamation-circle" />
+    //       </a-tooltip>
+    //       </span>
+    //     )
+    //   }
+    // }
+
+    const scopedSlots = {}
+
+    this.columns.map((item, index) => {
+      scopedSlots[`custom-${index}`] = () => {
+        return (
+          <span>
+          {item.titleOld}&nbsp;
+          <a-tooltip title={item.tip}>
+            <Icon type="exclamation-circle" />
+          </a-tooltip>
+          </span>
+        )
+      }
+    })
+
+    scopedSlots[`custom-cell-status`] = (text, record) => {
+      return (
+        <a-badge status={this.statusTypeFilter(text) } text={this.statusFilter(text) } />
+      )
+    }
+
+    const ellipsis = (text) => {
+      return <Ellipsis length={8} tooltip>{ text }</Ellipsis>
+    }
+
+    const copyable = (text, record, index, slot) => {
+      if (!record.copySuccess) this.$set(record, 'copySuccess', false)
+      const copy = (text) => {
+        this.$copyText(text).then((e) => {
+          record.copySuccess = true
+          console.log(e)
+        }, (e) => {
+          this.$message.error('Can not copy')
+          console.log(e)
+        })
+        setTimeout(() => {
+          record.copySuccess = false
+        }, 500)
+      }
+      return (
+          <span>{ ellipsis(text) }
+          <div role="button" tabindex="0" class="ant-typography-copy" onClick={() => { copy(text) }}
+            style="border: 0px; background: transparent; padding: 0px; line-height: inherit; display: inline-block;">
+            <Icon type={!record.copySuccess ? 'copy' : 'check'} />
+            </div>
+          </span>
+      )
+    }
+
+    scopedSlots[`custom-ellipsis`] = (text, record) => {
+      return ellipsis(text)
+    }
+
+    scopedSlots[`custom-copyable`] = (text, record, index) => {
+      return copyable(text, record, index, text)
+    }
+
+    scopedSlots[`custom-ellipsis-copyable`] = (text, record, index) => {
+      return copyable(text, record, index, ellipsis(text))
+    }
+
     const table = (
-      <a-table {...{ props, scopedSlots: { ...this.$scopedSlots } }} onChange={this.loadData} onExpand={ (expanded, record) => { this.$emit('expand', expanded, record) } }>
+      <a-table {...{ props, scopedSlots: { ...this.$scopedSlots, ...scopedSlots } }} onChange={this.loadData} onExpand={ (expanded, record) => { this.$emit('expand', expanded, record) } }>
         { Object.keys(this.$slots).map(name => (<template slot={name}>{this.$slots[name]}</template>)) }
       </a-table>
     )

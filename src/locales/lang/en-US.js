@@ -10,6 +10,10 @@ import dashboard from './en-US/dashboard'
 import form from './en-US/form'
 import result from './en-US/result'
 import account from './en-US/account'
+import multitab from './en-US/multitab'
+import editor from './en-US/editor'
+import provider from './en-US/provider'
+import globalHeader from './en-US/global-header'
 
 const components = {
   antLocale: antdEnUS,
@@ -31,5 +35,9 @@ export default {
   ...dashboard,
   ...form,
   ...result,
-  ...account
+  ...account,
+  ...multitab,
+  ...editor,
+  ...provider,
+  ...globalHeader
 }

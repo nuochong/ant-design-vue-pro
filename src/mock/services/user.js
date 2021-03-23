@@ -87,6 +87,34 @@ const info = (options) => {
       'dataAccess': null
     }, {
       'roleId': 'admin',
+      'permissionId': 'editor',
+      'permissionName': '图形编辑器页面权限',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'query',
+        'describe': '查询',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
       'permissionId': 'result',
       'permissionName': '结果权限',
       'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
@@ -681,6 +709,51 @@ const userNav = (options) => {
       },
       'component': 'AccountCenter'
     },
+
+    // editor
+    {
+      'name': 'editor',
+      'parentId': 0,
+      'id': 10035,
+      'meta': {
+        'title': '图形编辑器',
+        'icon': 'user',
+        'show': true
+      },
+      'redirect': '/account/center',
+      'component': 'RouteView'
+    },
+    {
+      'name': 'center',
+      'parentId': 10035,
+      'id': 10036,
+      'meta': {
+        'title': '流程编辑器',
+        'show': true
+      },
+      'component': 'Flow'
+    },
+    {
+      'name': 'center',
+      'parentId': 10035,
+      'id': 10037,
+      'meta': {
+        'title': '脑图编辑器',
+        'show': true
+      },
+      'component': 'Mind'
+    },
+    {
+      'name': 'center',
+      'parentId': 10035,
+      'id': 10038,
+      'meta': {
+        'title': '拓扑编辑器',
+        'show': true
+      },
+      'component': 'Koni'
+    },
+
     // 特殊三级菜单
     {
       'name': 'settings',

@@ -1,5 +1,5 @@
 <template>
-  <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight">
+  <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight" class="ant-pro-drop-down-global">
     <span class="ant-pro-account-avatar">
       <a-avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" class="antd-pro-global-header-index-avatar" />
       <span>{{ currentUser.name }}</span>
@@ -8,16 +8,19 @@
       <a-menu class="ant-pro-drop-down menu" :selected-keys="[]">
         <a-menu-item v-if="menu" key="center" @click="handleToCenter">
           <a-icon type="user" />
-          {{ $t('menu.account.center') }}
+          <!-- {{ $t('menu.account.center') }} -->
+          个人中心
         </a-menu-item>
         <a-menu-item v-if="menu" key="settings" @click="handleToSettings">
           <a-icon type="setting" />
-          {{ $t('menu.account.settings') }}
+          <!-- {{ $t('menu.account.settings') }} -->
+          个人设置
         </a-menu-item>
         <a-menu-divider v-if="menu" />
         <a-menu-item key="logout" @click="handleLogout">
           <a-icon type="logout" />
-          {{ $t('menu.account.logout') }}
+          <!-- {{ $t('menu.account.logout') }} -->
+          退出登录
         </a-menu-item>
       </a-menu>
     </template>
@@ -29,6 +32,7 @@
 
 <script>
 import { Modal } from 'ant-design-vue'
+import { i18nRender } from '@/locales'
 
 export default {
   name: 'AvatarDropdown',
@@ -40,6 +44,11 @@ export default {
     menu: {
       type: Boolean,
       default: true
+    }
+  },
+  data () {
+    return {
+      i18nRender
     }
   },
   methods: {
@@ -68,6 +77,11 @@ export default {
 }
 </script>
 
+<style lang="less">
+.ant-pro-global-header-index-right .ant-pro-drop-down {
+  line-height: 48px;
+}
+</style>
 <style lang="less" scoped>
 .ant-pro-drop-down {
   /deep/ .action {

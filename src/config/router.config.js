@@ -267,6 +267,34 @@ export const asyncRouterMap = [
             ]
           }
         ]
+      },
+
+      {
+        path: '/editor',
+        name: 'editor',
+        component: RouteView,
+        redirect: '/editor/koni',
+        meta: { title: 'menu.editor', icon: 'highlight', permission: ['editor'] },
+        children: [
+          {
+            path: '/editor/flow',
+            name: 'Flow',
+            component: () => import(/* webpackChunkName: "fail" */ '@/views/editor/Flow'),
+            meta: { title: 'menu.editor.flow', permission: ['editor'] }
+          },
+          {
+            path: '/editor/mind',
+            name: 'Mind',
+            component: () => import(/* webpackChunkName: "fail" */ '@/views/editor/Mind'),
+            meta: { title: 'menu.editor.mind', permission: ['editor'] }
+          },
+          {
+            path: '/editor/koni',
+            name: 'Koni',
+            component: () => import(/* webpackChunkName: "fail" */ '@/views/editor/Koni'),
+            meta: { title: 'menu.editor.koni', permission: ['editor'] }
+          }
+        ]
       }
 
       // other

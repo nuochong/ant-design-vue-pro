@@ -1,0 +1,8 @@
+.ant-typography-copy, .ant-typography-edit, .ant-typography-expand {
+  color: rgb(24, 144, 255);
+  cursor: pointer;
+  margin-left: 4px;
+  text-decoration: none;
+  outline: none;
+  transition: color 0.3s ease 0s;
+}
