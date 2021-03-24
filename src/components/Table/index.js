@@ -21,7 +21,6 @@ export default {
       localDataSource: [],
       localPagination: Object.assign({}, this.pagination),
 
-      columnsNew: {},
       statusMap: {},
       queryParam: {},
       customTemplate: {}
@@ -130,12 +129,24 @@ export default {
     }) || false
     this.needTotalList = this.initTotalList(this.columns)
     this.columns.map((item, index) => {
-      if (item.tip) {
+      const { valueEnum, ellipsis, copyable, sorter, tip, sortOrder } = item
+      if (tip && sorter) {
+        item.sortOrderOld = !sortOrder ? 'ascend' : sortOrder // 'descend'
+        item.scopedSlots = { ...item.scopedSlots, title: `custom-sorter-tip-${index}` }
+        item['titleOld'] = item.title
+        delete item.title
+      } else if (tip) {
+        item.sortOrderOld = !sortOrder ? 'ascend' : sortOrder
         item.scopedSlots = { ...item.scopedSlots, title: `custom-${index}` }
         item['titleOld'] = item.title
         delete item.title
+      } else if (sorter) {
+        item.sortOrderOld = !sortOrder ? 'ascend' : sortOrder
+        item.scopedSlots = { ...item.scopedSlots, title: `custom-sorter-${index}` }
+        item['titleOld'] = item.title
+        delete item.title
       }
-      const { valueEnum, ellipsis, copyable } = item
+
       if (valueEnum) {
         this.statusMap = valueEnum
         item.scopedSlots = { ...item.scopedSlots, customRender: 'custom-cell-status' }
@@ -159,7 +170,6 @@ export default {
   methods: {
     /** 处理搜索 */
     handleSearch () {
-      console.log('处理搜索')
       EventBus.$on('searchData', (queryParam) => {
         this.queryParam = queryParam
       })
@@ -182,6 +192,14 @@ export default {
      * @param {Object} sorter 排序条件
      */
     loadData (pagination, filters, sorter) {
+      if (sorter) {
+        const { columnKey, order } = sorter
+        this.columns.map(item => {
+          if (item.dataIndex === columnKey) {
+            item.sortOrderOld = order
+          }
+        })
+      }
       this.localLoading = true
       const parameter = Object.assign({
         pageNo: (pagination && pagination.current) ||
@@ -302,7 +320,10 @@ export default {
 
       // 绘制 alert 组件
       return (
-        <a-alert showIcon={true} style="margin-bottom: 16px">
+        <a-alert showIcon={false} style="margin-bottom: 16px" type="info" >
+          <template slot="closeText">
+            <a href="javascript:;" onClick={() => { this.clearSelected() }}>{this.$t('alert.clear')}</a>
+          </template>
           <template slot="message">
             <span style="margin-right: 12px">{ this.$t('alert.selected') } <a style="font-weight: 600">{this.selectedRows.length}</a> { this.$t('alert.item') }</span>
             {needTotalItems}
@@ -352,33 +373,57 @@ export default {
       this[k] && (props[k] = this[k])
       return props[k]
     })
-    // props.columns = this.columnsNew
-
-    // const scopedSlots = {
-    //   customTitle: ({ title, tip }) => {
-    //     return (
-    //       <span>
-    //       规则编号{title}
-    //       <a-tooltip title={tip}>
-    //         <Icon type="exclamation-circle" />
-    //       </a-tooltip>
-    //       </span>
-    //     )
-    //   }
-    // }
 
     const scopedSlots = {}
 
-    this.columns.map((item, index) => {
-      scopedSlots[`custom-${index}`] = () => {
-        return (
-          <span>
-          {item.titleOld}&nbsp;
-          <a-tooltip title={item.tip}>
-            <Icon type="exclamation-circle" />
+    const sortTipTemplate = (item, index) => {
+      const title = item.sortOrderOld === 'ascend' ? '点击升序' : '点击降序'
+      return (
+        <span>
+          <a-tooltip title={title}>
+            {item.titleOld}&nbsp;
+            <a-tooltip title={item.tip}>
+              <Icon type="exclamation-circle" />
+            </a-tooltip>
           </a-tooltip>
-          </span>
-        )
+        </span>
+      )
+    }
+
+    const sortTemplate = (item, index) => {
+      const title = item.sortOrderOld === 'ascend' ? '点击升序' : '点击降序'
+      return (
+        <span>
+          <a-tooltip title={title}>
+            {item.title || item.titleOld}
+          </a-tooltip>
+        </span>
+      )
+    }
+
+    const tipTemplate = (item, index) => {
+      return <span>
+      {item.titleOld}&nbsp;
+      <a-tooltip title={item.tip}>
+        <Icon type="exclamation-circle" />
+      </a-tooltip>
+      </span>
+    }
+
+    this.columns.map((item, index) => {
+      const { tip, sorter } = item
+      if (tip && sorter) {
+        scopedSlots[`custom-sorter-tip-${index}`] = () => {
+          return sortTipTemplate(item, index)
+        }
+      } else if (tip) {
+        scopedSlots[`custom-${index}`] = () => {
+          return tipTemplate(item, index)
+        }
+      } else if (sorter) {
+        scopedSlots[`custom-sorter-${index}`] = () => {
+          return sortTemplate(item, index)
+        }
       }
     })
 

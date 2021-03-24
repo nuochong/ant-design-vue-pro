@@ -360,7 +360,7 @@ export default {
   },
   watch: {
     columns (newVal) {
-      console.log('改变了父', newVal)
+      console.log('改变父', newVal)
     }
   },
   computed: {
@@ -386,7 +386,6 @@ export default {
       }
     })
     EventBus.$on('search', () => {
-      console.log('父组件搜索')
       this.search()
     })
   },
@@ -474,12 +473,10 @@ export default {
         props: {},
         attrs: { class: rowClass },
         on: {
-          // 事件
-          click: (event) => {
-          }, // 点击行
+          click: (event) => {},
           dblclick: (event) => {},
           contextmenu: (event) => {},
-          mouseenter: (event) => {}, // 鼠标移入行
+          mouseenter: (event) => {},
           mouseleave: (event) => {}
         }
       }
@@ -515,7 +512,6 @@ export default {
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('修改成功')
             })
           } else {
@@ -580,7 +576,7 @@ export default {
     display: flex;
     justify-content: space-between;
     height: 64px;
-    padding: 0 24px;
+    // padding: 0 24px;
     line-height: 64px;
     .ant-pro-table-list-toolbar-left {
       display: flex;

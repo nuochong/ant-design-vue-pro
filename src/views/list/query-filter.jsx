@@ -149,7 +149,7 @@ const QueryFilter = {
                 <a-button style="margin-left: 8px" onClick={() => { this.reset() }}>{ this.$t('tableForm.reset') }</a-button>
                 <a onClick={() => { this.toggleAdvanced() }} style="margin-left: 8px">
                   { this.advanced ? `${this.$t('tableForm.collapsed')}` : `${this.$t('tableForm.expand')}` }
-                  <a-icon type={this.advanced ? 'up' : 'down'} />
+                  <a-icon type={this.advanced ? 'up' : 'down'} style="margin-left: 0.5em;"/>
                 </a>
               </span>
             </a-col>
