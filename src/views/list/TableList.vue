@@ -3,7 +3,7 @@
 
     <QueryFilter :columns="columns" :advanced="true" :queryParam="queryParam"></QueryFilter>
 
-    <a-card :bordered="false" id="table">
+    <a-card :bordered="false" id="table" class="ant-table-container">
 
       <div class="ant-pro-table-list-toolbar">
         <div class="ant-pro-table-list-toolbar-container">
