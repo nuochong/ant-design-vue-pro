@@ -22,13 +22,13 @@ export default {
     selected: 'Selected',
     item: 'Item'
   },
-  // pagination: {
-  //   total: {
-  //     range: ' ',
-  //     total: 'of',
-  //     item: 'items'
-  //   }
-  // },
+  pagination: {
+    total: {
+      range: ' ',
+      total: 'of',
+      item: 'items'
+    }
+  },
   tableToolBar: {
     intervalTexture: 'Interval texture',
     leftPin: 'Pin to left',

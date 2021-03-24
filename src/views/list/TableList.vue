@@ -115,6 +115,7 @@
         :rowSelection="rowSelection"
         :customRow="customRow"
         showPagination="auto"
+        :pagination="pagination"
         :bordered="false">
         <span slot="name" slot-scope="text, record, index">
           <a @click="setRow(record,index)">{{ text }}</a>
@@ -307,6 +308,12 @@ export default {
   },
   data () {
     return {
+      pagination: {
+        'total': 85,
+        'show-total': (total, range) => `${this.$t('pagination.total.range')}${range[0]}-${range[1]} ${this.$t('pagination.total.total')} ${total} ${this.$t('pagination.total.item')}`,
+        'page-size': 20,
+        'default-current': 1
+      },
       indeterminate: false,
       checkAll: true,
       align: {

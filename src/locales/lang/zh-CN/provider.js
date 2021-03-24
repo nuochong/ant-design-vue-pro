@@ -22,13 +22,13 @@ export default {
     selected: '已选择',
     item: '项'
   },
-  // pagination: {
-  //   total: {
-  //     range: '第',
-  //     total: '条/总共',
-  //     item: '条'
-  //   }
-  // },
+  pagination: {
+    total: {
+      range: '第',
+      total: '条/总共',
+      item: '条'
+    }
+  },
   tableToolBar: {
     intervalTexture: '间隔纹理',
     leftPin: '固定在列首',

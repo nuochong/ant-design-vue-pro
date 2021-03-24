@@ -97,6 +97,14 @@ export default {
     this.$watch('model', () => {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
     })
+  },
+  methods: {
+    handleCancel () {
+
+    },
+    handleOk () {
+
+    }
   }
 }
 </script>
