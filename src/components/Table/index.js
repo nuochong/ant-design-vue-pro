@@ -377,7 +377,7 @@ export default {
     const scopedSlots = {}
 
     const sortTipTemplate = (item, index) => {
-      const title = item.sortOrderOld === 'ascend' ? '点击升序' : '点击降序'
+      const title = item.sortOrderOld === 'ascend' ? this.$t('tableSorter.clickAscending') : this.$t('tableSorter.clickDescending')
       return (
         <span>
           <a-tooltip title={title}>
@@ -391,7 +391,7 @@ export default {
     }
 
     const sortTemplate = (item, index) => {
-      const title = item.sortOrderOld === 'ascend' ? '点击升序' : '点击降序'
+      const title = item.sortOrderOld === 'ascend' ? this.$t('tableSorter.clickAscending') : this.$t('tableSorter.clickDescending')
       return (
         <span>
           <a-tooltip title={title}>

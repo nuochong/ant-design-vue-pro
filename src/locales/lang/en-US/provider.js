@@ -48,6 +48,11 @@ export default {
     densityLarger: 'Larger',
     densityMiddle: 'Middle',
     densitySmall: 'Compact'
+  },
+  tableSorter: {
+    clickSort: 'Click Sort',
+    clickAscending: 'Click ascending',
+    clickDescending: 'Click descending'
   }
   // stepsForm: {
   //   next: 'Next',

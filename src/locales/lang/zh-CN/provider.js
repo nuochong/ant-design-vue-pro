@@ -48,5 +48,10 @@ export default {
     densityLarger: '默认',
     densityMiddle: '中等',
     densitySmall: '紧凑'
+  },
+  tableSorter: {
+    clickSort: '点击排序',
+    clickAscending: '点击升序',
+    clickDescending: '点击降序'
   }
 }
