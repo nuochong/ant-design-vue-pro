@@ -105,6 +105,7 @@ export default {
         regionalSettingsHeader: defaultSettings.regionalSettingsHeader,
         multiTabFixed: defaultSettings.multiTabFixed,
         transitionName: defaultSettings.transitionName,
+        foldButtonPosition: defaultSettings.foldButtonPosition,
 
         hideHintAlert: false,
         hideCopyButton: false
@@ -219,6 +220,9 @@ export default {
           break
         case 'transitionName':
           this.settings.transitionName = value
+          break
+        case 'foldButtonPosition':
+          this.settings.foldButtonPosition = value
           break
         case 'layout':
           console.log('改变布局', value)

@@ -25,6 +25,7 @@ export default {
   regionalSettingsHeader: true,
   multiTabFixed: false,
   transitionName: 'null',
+  foldButtonPosition: 'Slide',
   colorWeak: false,
   multiTab: true,
   menu: {

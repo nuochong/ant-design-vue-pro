@@ -17,11 +17,11 @@ export default {
     inputPlaceholder: 'Please enter',
     selectPlaceholder: 'Please select'
   },
-  // alert: {
-  //   clear: 'Clear',
-  //   selected: 'Selected',
-  //   item: 'Item'
-  // },
+  alert: {
+    clear: 'Clear',
+    selected: 'Selected',
+    item: 'Item'
+  },
   // pagination: {
   //   total: {
   //     range: ' ',

@@ -25,24 +25,6 @@ export default {
       statusMap: {},
       queryParam: {},
       customTemplate: {}
-      // statusMap: {
-      //   0: {
-      //     status: 'default',
-      //     text: '关闭'
-      //   },
-      //   1: {
-      //     status: 'processing',
-      //     text: '运行中'
-      //   },
-      //   2: {
-      //     status: 'success',
-      //     text: '已上线'
-      //   },
-      //   3: {
-      //     status: 'error',
-      //     text: '异常'
-      //   }
-      // }
     }
   },
   props: Object.assign({}, T.props, {
@@ -160,7 +142,6 @@ export default {
       }
 
       if (ellipsis && copyable) {
-        console.log('混合')
         item.scopedSlots = { ...item.scopedSlots, customRender: 'custom-ellipsis-copyable' }
       } else if (ellipsis) {
         item.scopedSlots = { ...item.scopedSlots, customRender: 'custom-ellipsis' }
@@ -323,7 +304,7 @@ export default {
       return (
         <a-alert showIcon={true} style="margin-bottom: 16px">
           <template slot="message">
-            <span style="margin-right: 12px">已选择: <a style="font-weight: 600">{this.selectedRows.length}</a></span>
+            <span style="margin-right: 12px">{ this.$t('alert.selected') } <a style="font-weight: 600">{this.selectedRows.length}</a> { this.$t('alert.item') }</span>
             {needTotalItems}
             {clearItem}
           </template>

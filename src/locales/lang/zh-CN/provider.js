@@ -17,11 +17,11 @@ export default {
     inputPlaceholder: '请输入',
     selectPlaceholder: '请选择'
   },
-  // alert: {
-  //   clear: '取消选择',
-  //   selected: '已选择',
-  //   item: '项'
-  // },
+  alert: {
+    clear: '取消选择',
+    selected: '已选择',
+    item: '项'
+  },
   // pagination: {
   //   total: {
   //     range: '第',

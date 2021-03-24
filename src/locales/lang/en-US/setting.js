@@ -46,5 +46,9 @@ export default {
   'app.setting.transition-name.slide-upload': 'Slide Upload',
   'app.setting.transition-name.slide-right': 'Slide Right',
   'app.setting.transition-name.fade-in': 'Fade In',
-  'app.setting.transition-name.zoom': 'Zoom'
+  'app.setting.transition-name.zoom': 'Zoom',
+  'app.setting.fold-button-position': 'Fold button position',
+  'app.setting.fold-button-position.slide': 'Slide',
+  'app.setting.fold-button-position.mix': 'Mix',
+  'app.setting.fold-button-position.header': 'Header'
 }

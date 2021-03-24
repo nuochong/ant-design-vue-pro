@@ -1,68 +1,5 @@
 <template>
   <page-header-wrapper>
-    <a-card :bordered="false" class="card-margin">
-      <div class="table-page-search-wrapper">
-        <a-form-model ref="ruleFormTemp" layout="inline" :model="queryParam">
-          <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
-              <!-- <a-form-model-item label="规则编号" prop="id" :rules="{ required: true, message: 'Please pick a date', trigger: ['change','blur'] }"> -->
-              <a-form-model-item label="规则编号" prop="id" :rules="columns[0].rules">
-                <a-input v-model="queryParam['id']" placeholder="" />
-              </a-form-model-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-model-item label="使用状态">
-                <a-select v-model="queryParam.status" placeholder="请选择" default-value="0">
-                  <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1">关闭</a-select-option>
-                  <a-select-option value="2">运行中</a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
-            <template v-if="advanced">
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="调用次数">
-                  <a-input-number v-model="queryParam.callNo" style="width: 100%" />
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="更新日期">
-                  <a-date-picker v-model="queryParam.date" style="width: 100%" placeholder="请输入更新日期" />
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="使用状态">
-                  <a-select v-model="queryParam.useStatus" placeholder="请选择" default-value="0">
-                    <a-select-option value="0">全部</a-select-option>
-                    <a-select-option value="1">关闭</a-select-option>
-                    <a-select-option value="2">运行中</a-select-option>
-                  </a-select>
-                </a-form-model-item>
-              </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-model-item label="使用状态">
-                  <a-select placeholder="请选择" default-value="0">
-                    <a-select-option value="0">全部</a-select-option>
-                    <a-select-option value="1">关闭</a-select-option>
-                    <a-select-option value="2">运行中</a-select-option>
-                  </a-select>
-                </a-form-model-item>
-              </a-col>
-            </template>
-            <a-col :md="!advanced && 8 || 24" :sm="24">
-              <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
-                <a-button type="primary" @click="search()">查询</a-button>
-                <a-button style="margin-left: 8px" @click="() => this.queryParam = {}">重置</a-button>
-                <a @click="toggleAdvanced" style="margin-left: 8px">
-                  {{ advanced ? '收起' : '展开' }}
-                  <a-icon :type="advanced ? 'up' : 'down'" />
-                </a>
-              </span>
-            </a-col>
-          </a-row>
-        </a-form-model>
-      </div>
-    </a-card>
 
     <QueryFilter :columns="columns" :advanced="true" :queryParam="queryParam"></QueryFilter>
 
@@ -140,12 +77,12 @@
                 </a-popover>
               </a-tooltip>
             </div>
-            <!-- <div class="ant-pro-table-list-toolbar-setting-item">
-              <a-tooltip title="全屏"  :getPopupContainer="e=> e">
+            <div class="ant-pro-table-list-toolbar-setting-item">
+              <a-tooltip :title="$t(!isFull ? 'tableToolBar.fullScreen' : 'tableToolBar.exitFullScreen')" :getPopupContainer="e=> e">
                 <a-icon type="fullscreen" @click="showFull($event)" v-if="!isFull"/>
                 <a-icon type="fullscreen" @click="delFull($event)" v-else/>
               </a-tooltip>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -177,26 +114,14 @@
         :alert="true"
         :rowSelection="rowSelection"
         :customRow="customRow"
-        showPagination="auto">
+        showPagination="auto"
+        :bordered="false">
         <span slot="name" slot-scope="text, record, index">
           <a @click="setRow(record,index)">{{ text }}</a>
         </span>
-        <!-- <span slot="customTitle">
-          规则编号
-          <a-tooltip title="规则名称是唯一的 key">
-            <a-icon type="exclamation-circle" />
-          </a-tooltip>
-        </span> -->
         <span slot="serial" slot-scope="text, record, index">
           {{ index + 1 }}
         </span>
-        <!-- <span slot="status" slot-scope="text">
-          <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
-        </span> -->
-        <!-- <span slot="description" slot-scope="text">
-          <ellipsis :length="4" tooltip>{{ text }}</ellipsis>
-        </span> -->
-
         <span slot="action" slot-scope="text, record">
           <template>
             <a @click="handleEdit(record)">配置</a>
@@ -268,7 +193,6 @@
 import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
 import { getRoleList, getServiceList } from '@/api/manage'
-
 import StepByStepModal from './modules/StepByStepModal'
 import CreateForm from './modules/CreateForm'
 import Tree from './tree'
@@ -316,7 +240,6 @@ const columns = [
   {
     title: '规则编号',
     dataIndex: 'no',
-    scopedSlots: { title: 'customTitle' },
     valueType: 'text',
     hideInSearch: false,
     formItemProps: {
@@ -326,7 +249,7 @@ const columns = [
   // {
   //   title: '描述',
   //   dataIndex: 'description',
-  //   scopedSlots: { customRender: 'description' }
+  //   ellipsis: true,
   // },
   {
     title: '服务调用次数',
@@ -349,7 +272,6 @@ const columns = [
   {
     title: '状态',
     dataIndex: 'status',
-    // scopedSlots: { customRender: 'status' },
     valueType: 'option',
     valueEnum: {
       0: { text: '关闭', status: 'default' },
@@ -384,7 +306,6 @@ export default {
     QueryFilter
   },
   data () {
-    // this.columns = columns
     return {
       indeterminate: false,
       checkAll: true,
