@@ -5,6 +5,7 @@ import { EventBus } from '../../components/event-bus'
 // import Layout from 'ant-design-vue/es/layout'
 import 'ant-design-vue/es/select/style'
 import Select from 'ant-design-vue/es/select'
+import ResponsiveObserve from 'ant-design-vue/es/_util/responsiveObserve'
 
 const WrapContentProps = {
   columns: PropTypes.any
@@ -17,6 +18,31 @@ const QueryFilter = {
   },
   data () {
     return {
+      screens: {},
+      targetIndex: '',
+      formLayout: 'inline',
+      layout: [
+        { title: 'xs',
+          value: null
+        },
+        { title: 'sm',
+          value: null
+        },
+        { title: 'md',
+          value: null
+        },
+        { title: 'lg',
+          value: null
+        },
+        { title: 'xl',
+          value: null
+        },
+        { title: 'xxl',
+          value: null
+        }
+      ],
+      baseWdith: 0,
+      rowInputNumber: 0,
       isRouterAlive: true,
       // 高级搜索 展开/关闭
       advanced: false,
@@ -28,12 +54,74 @@ const QueryFilter = {
         // no: '',
         // status: '',
         // updatedAt: ''
-      }
+      },
+      baseLayout: {
+        xs: 24,
+        sm: 24,
+        md: 24,
+        lg: 12,
+        xl: 8,
+        xxl: 6
+      },
+      btnOffset: 0
     }
   },
   mounted () {
+    this.$nextTick(() => {
+      this.token = ResponsiveObserve.subscribe(screens => {
+        this.screens = screens
+        for (const item in this.layout) {
+          this.layout[item].value = null
+          const title = this.layout[item].title
+          if (this.screens[title]) {
+            this.layout[item].value = this.screens[title]
+          }
+        }
+
+        const temp = this.layout.slice().reverse()
+        temp.some(item => {
+          if (item.value) {
+            this.targetIndex = item
+          }
+          return item.value
+        })
+
+        if (this.baseLayout[this.targetIndex.title] === 24) {
+          this.formLayout = 'vertical'
+        } else {
+          this.formLayout = 'inline'
+        }
+        this.handleCollsped()
+      })
+    })
+  },
+  beforeDestroy () {
+    ResponsiveObserve.unsubscribe(this.token)
+  },
+  watch: {
+    advanced (newVal) {
+      this.handleCollsped()
+    }
+  },
+  computed: {
+    topArr () {
+      const endNum = this.rowInputNumber > 1 ? this.rowInputNumber - 1 : 1
+      return this.columns.slice(0, endNum)
+    },
+    bottomArr () {
+      const endNum = this.rowInputNumber > 1 ? this.rowInputNumber - 1 : 1
+      return this.columns.slice(endNum)
+    }
   },
   methods: {
+    handleCollsped () {
+      this.baseWdith = this.baseLayout[this.targetIndex.title]
+      this.rowInputNumber = 24 / this.baseWdith
+      const topArrLen = this.topArr.length
+      const columnsType = !this.advanced ? topArrLen : topArrLen + this.bottomArr.length
+      const otherInputNumber = columnsType % this.rowInputNumber
+      this.btnOffset = (this.rowInputNumber - otherInputNumber - 1) * this.baseWdith
+    },
     handleChange (value, item) {
       this.queryParam[item.dataIndex] = value.toString()
     },
@@ -67,96 +155,102 @@ const QueryFilter = {
     console.log('this.queryParam', this.queryParam)
   },
   render (h) {
-    const { columns } = this.$props
-      const proFormText = (item) => {
-        // const asyncProps = {
-        //   on: {
-        //     onInput: e => { this.queryParam[item.dataIndex] = e.target.value }
-        //   },
-        //   value: this.queryParam[item.dataIndex]
-        // }
-        return <a-input v-model={this.queryParam[item.dataIndex]} placeholder={ this.$t('tableForm.inputPlaceholder') } />
-        // return <a-input {...asyncProps} placeholder="请输入" />
-      }
-      const proFormNumber = (item) => {
-        return <a-input-number v-model={this.queryParam[item.dataIndex]} class="search-input" placeholder={ this.$t('tableForm.inputPlaceholder') } />
-      }
+    // const { columns } = this.$props
+    const proFormText = (item) => {
+      // const asyncProps = {
+      //   on: {
+      //     onInput: e => { this.queryParam[item.dataIndex] = e.target.value }
+      //   },
+      //   value: this.queryParam[item.dataIndex]
+      // }
+      return <a-input v-model={this.queryParam[item.dataIndex]} placeholder={this.$t('tableForm.inputPlaceholder')} />
+      // return <a-input {...asyncProps} placeholder="请输入" />
+    }
+    const proFormNumber = (item) => {
+      return <a-input-number v-model={this.queryParam[item.dataIndex]} class="search-input" placeholder={this.$t('tableForm.inputPlaceholder')} />
+    }
 
-      const proFormDatePicker = (item) => {
-        return <a-date-picker type="data" show-time v-model={this.queryParam[item.dataIndex]} placeholder={ this.$t('tableForm.selectPlaceholder') } class="search-input" />
-      }
+    const proFormDatePicker = (item) => {
+      return <a-date-picker type="data" show-time v-model={this.queryParam[item.dataIndex]} placeholder={this.$t('tableForm.selectPlaceholder')} class="search-input" />
+    }
 
-      const proFormSelect = (item) => {
-        const options = Object.keys(item.valueEnum).map(child => {
-          return <Select.Option value={child} >{item.valueEnum[child].text}</Select.Option>
-        })
+    const proFormSelect = (item) => {
+      const options = Object.keys(item.valueEnum).map(child => {
+        return <Select.Option value={child} >{item.valueEnum[child].text}</Select.Option>
+      })
 
       const value = this.queryParam[item.dataIndex]
-      return <Select placeholder={ this.$t('tableForm.selectPlaceholder') } value={value} onSelect={(value) => { this.handleChange(value, item) }}>
+      return <Select placeholder={this.$t('tableForm.selectPlaceholder')} value={value} onSelect={(value) => { this.handleChange(value, item) }}>
         {options}
-        </Select>
-      }
+      </Select>
+    }
 
-      // const proFormTimePicker = (item) => {
-      //   return <a-time-picker use12-hours placeholder={ this.$t('tableForm.selectPlaceholder') }/>
-      // }
-      // const advancedRender = bottomArr.map((item) => <fragment></fragment> )
-      const formTypeMap = {
-        'text': proFormText,
-        'number': proFormNumber,
-        'data': proFormDatePicker,
-        'dateTime': proFormDatePicker,
-        'option': proFormSelect
-      }
-      const changeContentMap = {
-        topArr: columns.slice(0, 2),
-        bottomArr: columns.slice(2)
-      }
-      const labelTip = (item) => {
-        return <span>
+    // const proFormTimePicker = (item) => {
+    //   return <a-time-picker use12-hours placeholder={ this.$t('tableForm.selectPlaceholder') }/>
+    // }
+    // const advancedRender = bottomArr.map((item) => <fragment></fragment> )
+    const formTypeMap = {
+      'text': proFormText,
+      'number': proFormNumber,
+      'data': proFormDatePicker,
+      'dateTime': proFormDatePicker,
+      'option': proFormSelect
+    }
+    const changeContentMap = {
+      topArr: this.topArr,
+      bottomArr: this.bottomArr
+    }
+    const labelTip = (item) => {
+      return <span>
         {item.title || item.titleOld}&nbsp;
         <a-tooltip title={item.tip}>
           <a-icon type="exclamation-circle" />
         </a-tooltip>
-        </span>
-      }
-      const changeContent = (type) => {
-        return changeContentMap[type].map((item) => {
-          let label = item.title
-          if (item.tip) {
-            label = labelTip(item)
-          }
+      </span>
+    }
+    const changeContent = (type) => {
+      return changeContentMap[type].map((item) => {
+        let label = item.title
+        if (item.tip) {
+          label = labelTip(item)
+        }
 
-          const content = formTypeMap[item.valueType]
-          return !item.hideInSearch && <a-col md={8} sm={24}>
-            <a-form-model-item label={label} prop={item.dataIndex} rules={item?.formItemProps?.rules || {} }>
-              {content(item)}
-            </a-form-model-item>
-          </a-col>
-          })
-      }
+        const content = formTypeMap[item.valueType]
+        return !item.hideInSearch && <a-col {...{ props: { ...this.baseLayout } } }>
+          <a-form-model-item prop={item.dataIndex} rules={item?.formItemProps?.rules || {}} labelCol={{ flex: '0 0 120px' }}>
+            <span slot="label">
+              {label}
+            </span>
+            {content(item)}
+          </a-form-model-item>
+        </a-col>
+      })
+    }
 
+    const btnHidden = this.advanced && { overflow: 'hidden' } || {}
     return (
       <a-card bordered={false} class="card-margin card-search">
-      <div class="table-page-search-wrapper">
-        <a-form-model {...{ props: { model: this.queryParam } }} layout="inline" ref="ruleForm" >
-          <a-row gutter={48}>
-            {changeContent('topArr')}
-            {this.advanced && changeContent('bottomArr') }
-            <a-col md={!this.advanced && 8 || 24} sm={24}>
-              <span class="table-page-search-submitButtons" style={this.advanced && { float: 'right', overflow: 'hidden' } || {} }>
-                <a-button type="primary" onClick={ () => { this.search() } }>{ this.$t('tableForm.search') }</a-button>
-                <a-button style="margin-left: 8px" onClick={() => { this.reset() }}>{ this.$t('tableForm.reset') }</a-button>
-                <a onClick={() => { this.toggleAdvanced() }} style="margin-left: 8px">
-                  { this.advanced ? `${this.$t('tableForm.collapsed')}` : `${this.$t('tableForm.expand')}` }
-                  <a-icon type={this.advanced ? 'up' : 'down'} style="margin-left: 0.5em;"/>
-                </a>
-              </span>
-            </a-col>
-          </a-row>
-        </a-form-model>
-      </div>
-    </a-card>
+        <div class="table-page-search-wrapper">
+          <a-form-model {...{ props: { model: this.queryParam } }} layout={this.formLayout} ref="ruleForm" >
+            <a-row gutter={48}>
+              {changeContent('topArr')}
+              {this.advanced && changeContent('bottomArr')}
+              {/* <a-col md={!this.advanced && 8 || 24} sm={24} offset={this.btnOffset}> */}
+              <a-col {...{ props: { ...this.baseLayout } } } offset={this.btnOffset}>
+                {/* <span class="table-page-search-submitButtons" style={this.advanced && { float: 'right', overflow: 'hidden' } || {}}> */}
+                <span class="table-page-search-submitButtons" style={{ ...btnHidden, float: 'right' }}>
+                  <a-button type="primary" onClick={() => { this.search() }}>{this.$t('tableForm.search')}</a-button>
+                  <a-button style="margin-left: 8px" onClick={() => { this.reset() }}>{this.$t('tableForm.reset')}</a-button>
+                  <a onClick={() => { this.toggleAdvanced() }} style="margin-left: 8px">
+                    {this.advanced ? `${this.$t('tableForm.collapsed')}` : `${this.$t('tableForm.expand')}`}
+                    <a-icon type={this.advanced ? 'up' : 'down'} style="margin-left: 0.5em;" />
+                  </a>
+                </span>
+              </a-col>
+            </a-row>
+          </a-form-model>
+        </div>
+      </a-card>
     )
   }
 }
