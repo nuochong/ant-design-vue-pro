@@ -45,7 +45,7 @@ export default {
   'app.setting.transition-name.slide-right': 'Slide Right',
   'app.setting.transition-name.fade-in': 'Fade In',
   'app.setting.transition-name.zoom': 'Zoom',
-  'app.setting.fold-button-position': 'Fold Button Position',
+  'app.setting.fold-button-position': '折叠按钮位置',
   'app.setting.fold-button-position.slide': 'Slide',
   'app.setting.fold-button-position.mix': 'Mix',
   'app.setting.fold-button-position.header': 'Header'
