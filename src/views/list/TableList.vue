@@ -1,93 +1,6 @@
 <template>
   <page-header-wrapper>
-
-    <QueryFilter :columns="columns" :advanced="true" :queryParam="queryParam"></QueryFilter>
-
-    <a-card :bordered="false" id="table" class="ant-table-container">
-
-      <div class="ant-pro-table-list-toolbar">
-        <div class="ant-pro-table-list-toolbar-container">
-          <div class="ant-pro-table-list-toolbar-left">
-            <div class="ant-pro-table-list-toolbar-title">
-              <CircleTip title="查询表格" tip="高级表格提示"></CircleTip>
-            </div>
-          </div>
-          <div class="ant-pro-table-list-toolbar-right">
-            <div class="ant-space ant-space-horizontal ant-space-align-center">
-              <div class="ant-space-item" style="margin-right: 8px;">
-                <button class="ant-btn ant-btn-primary" type="button" @click="handleAdd">
-                  <a-icon type="plus" />
-                  <span>新建</span>
-                </button>
-              </div>
-              <div class="ant-space-item">
-                <div class="ant-pro-table-list-toolbar-setting-item">
-                  <!-- <a-tooltip title="斑马纹" :getPopupContainer="e=> e"> -->
-                  <a-tooltip :title="$t('tableToolBar.intervalTexture')">
-                    <span>
-                      <a-switch v-model="rowStriped" @change="onChange" :style="{top:'-2px'}"/>
-                    </span>
-                  </a-tooltip>
-                </div>
-              </div>
-            </div>
-            <div class="ant-pro-table-list-toolbar-divider">
-              <div class="ant-divider ant-divider-vertical" role="separator">
-              </div>
-            </div>
-            <div class="ant-pro-table-list-toolbar-setting-item">
-              <!-- <a-tooltip title="刷新" :getPopupContainer="e=> e"> -->
-              <a-tooltip :title="$t('tableToolBar.reload')">
-                <a-icon type="reload" @click="reload" />
-              </a-tooltip>
-            </div>
-            <div class="ant-pro-table-list-toolbar-setting-item">
-
-              <!-- <a-dropdown :trigger="['click']" :placement="'bottomRight'" :overlayClassName="'toolbar-height'" :getPopupContainer="e=> e"> -->
-              <a-dropdown :trigger="['click']" :placement="'bottomRight'" :overlayClassName="'toolbar-height'" >
-                <!-- <a-tooltip title="密度" :getPopupContainer="e=> e"> -->
-                <a-tooltip :title="$t('tableToolBar.density')">
-                  <a-icon type="column-height" />
-                </a-tooltip>
-                <a-menu slot="overlay" @click="height" selectable :selectedKeys="[tableHeight]">
-                  <a-menu-item :key="index" v-for="(item,index) in heightObj">
-                    {{ item }}
-                  </a-menu-item>
-                </a-menu>
-              </a-dropdown>
-
-            </div>
-            <div class="ant-pro-table-list-toolbar-setting-item">
-              <!-- <a-tooltip title="列设置" :getPopupContainer="e=> e"> -->
-              <a-tooltip :title="$t('tableToolBar.columnSetting')" >
-                <!-- <a-popover v-model="visibleColumnsSettings" trigger="click" placement="bottomRight" :getPopupContainer="e=> e" overlayClassName="ant-pro-table-column-setting-overlay"> -->
-                <a-popover v-model="visibleColumnsSettings" trigger="click" placement="bottomRight" overlayClassName="ant-pro-table-column-setting-overlay" :align="align">
-                  <a-icon type="setting" @click="hide" />
-                  <div class="ant-pro-table-column-setting-title" slot="title">
-                    <label class="ant-checkbox-wrapper ant-checkbox-wrapper-checked">
-                      <a-checkbox :indeterminate="indeterminate" :checked="checkAll" @change="onCheckAllChange">
-                        {{ $t('tableToolBar.columnDisplay') }}
-                      </a-checkbox>
-                    </label>
-                    <a href="javascript:;" @click="tableReset">{{ $t('tableToolBar.reset') }}</a>
-                  </div>
-                  <div slot="content">
-                    <tree :columns.sync="columns" :slotsExchange="slotsExchange" ref="tree" />
-                  </div>
-                </a-popover>
-              </a-tooltip>
-            </div>
-            <div class="ant-pro-table-list-toolbar-setting-item">
-              <a-tooltip :title="$t(!isFull ? 'tableToolBar.fullScreen' : 'tableToolBar.exitFullScreen')" :getPopupContainer="e=> e">
-                <a-icon type="fullscreen" @click="showFull($event)" v-if="!isFull"/>
-                <a-icon type="fullscreen" @click="delFull($event)" v-else/>
-              </a-tooltip>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- <div class="table-operator">
+    <!-- <div class="table-operator">
         <a-button type="primary" icon="plus" @click="handleAdd">新建</a-button>
         <a-dropdown v-action:edit v-if="selectedRowKeys.length > 0">
           <a-menu slot="overlay">
@@ -105,105 +18,99 @@
         </a-dropdown>
       </div> -->
 
-      <s-table
-        ref="table"
-        :size="tableHeight"
-        rowKey="key"
-        :columns="columns"
-        :data="loadData"
-        :alert="true"
-        :rowSelection="rowSelection"
-        :customRow="customRow"
-        showPagination="auto"
-        :pagination="pagination"
-        :bordered="false">
-        <span slot="name" slot-scope="text, record, index">
-          <a @click="setRow(record,index)">{{ text }}</a>
-        </span>
-        <span slot="serial" slot-scope="text, record, index">
-          {{ index + 1 }}
-        </span>
-        <span slot="action" slot-scope="text, record">
-          <template>
-            <a @click="handleEdit(record)">配置</a>
-            <a-divider type="vertical" />
-            <a @click="handleSub(record)">订阅报警</a>
-          </template>
-        </span>
-      </s-table>
+    <TableListNew v-bind="tableSettings">
+      <template slot="toolBarRender">
+        <div class="ant-space-item" style="margin-right: 8px;">
+          <button class="ant-btn ant-btn-primary" type="button" @click="handleAdd">
+            <a-icon type="plus" />
+            <span>新建</span>
+          </button>
+        </div>
+      </template>
+      <span slot="name" slot-scope="text, record, index">
+        <a @click="setRow(record,index)">{{ text }}</a>
+      </span>
+      <span slot="serial" slot-scope="text, record, index">
+        {{ index + 1 }}
+      </span>
+      <span slot="action" slot-scope="text, record">
+        <template>
+          <a @click="handleEdit(record)">配置</a>
+          <a-divider type="vertical" />
+          <a @click="handleSub(record)">订阅报警</a>
+        </template>
+      </span>
+      <template slot="footer">
+        Footer
+      </template>
+    </TableListNew>
 
-      <a-drawer
-        placement="right"
-        :closable="false"
-        :visible="visibleDrawer"
-        :after-visible-change="afterVisibleChange"
-        @close="onClose"
-        :width="600"
-      >
-        <a-descriptions :column="2">
-          <template slot="title" slot-scope="text, record">
-            <div class="ant-descriptions-title-inner">
-              TradeCode 99
-            </div>
-
-            <div class="ant-descriptions-extra">
-              <div class="ant-space ant-space-horizontal ant-space-align-center ant-pro-field-option">
-                <div class="ant-space-item" style="margin-right: 16px;">
-                  <a href="javascript:;" @click="handleEdit(record)">配置</a>
-                </div>
-                <div class="ant-space-item" style="margin-right: 16px;">
-                  <div class="ant-divider ant-divider-vertical" role="separator"></div>
-                </div>
-                <div class="ant-space-item">
-                  <a href="javascript:;" @click="handleSub(record)">订阅警报</a>
-                </div>
+    <a-drawer
+      placement="right"
+      :closable="false"
+      :visible="visibleDrawer"
+      :after-visible-change="afterVisibleChange"
+      @close="onClose"
+      :width="600">
+      <a-descriptions :column="2">
+        <template slot="title" slot-scope="text, record">
+          <div class="ant-descriptions-title-inner">
+            TradeCode 99
+          </div>
+          <div class="ant-descriptions-extra">
+            <div class="ant-space ant-space-horizontal ant-space-align-center ant-pro-field-option">
+              <div class="ant-space-item" style="margin-right: 16px;">
+                <a href="javascript:;" @click="handleEdit(record)">配置</a>
+              </div>
+              <div class="ant-space-item" style="margin-right: 16px;">
+                <div class="ant-divider ant-divider-vertical" role="separator"></div>
+              </div>
+              <div class="ant-space-item">
+                <a href="javascript:;" @click="handleSub(record)">订阅警报</a>
               </div>
             </div>
-          </template>
-          <a-descriptions-item label="规则名称">
-            TradeCode 99
-          </a-descriptions-item>
-          <a-descriptions-item label="描述">
-            这是一段描述
-          </a-descriptions-item>
-          <a-descriptions-item label="服务调用次数">
-            901 万
-          </a-descriptions-item>
-          <a-descriptions-item label="状态">
-            运行中
-          </a-descriptions-item>
-          <a-descriptions-item label="上次调度时间">
-            2021-03-16 15:53:15
-          </a-descriptions-item>
-        </a-descriptions>
-      </a-drawer>
+          </div>
+        </template>
+        <a-descriptions-item label="规则名称">
+          TradeCode 99
+        </a-descriptions-item>
+        <a-descriptions-item label="描述">
+          这是一段描述
+        </a-descriptions-item>
+        <a-descriptions-item label="服务调用次数">
+          901 万
+        </a-descriptions-item>
+        <a-descriptions-item label="状态">
+          运行中
+        </a-descriptions-item>
+        <a-descriptions-item label="上次调度时间">
+          2021-03-16 15:53:15
+        </a-descriptions-item>
+      </a-descriptions>
+    </a-drawer>
 
-      <create-form
-        ref="createModal"
-        :visible="visible"
-        :loading="confirmLoading"
-        :model="mdl"
-        @cancel="handleCancel"
-        @ok="handleOk" />
-      <step-by-step-modal ref="modal" @ok="handleOk" />
-    </a-card>
+    <create-form
+      ref="createModal"
+      :visible="visible"
+      :loading="confirmLoading"
+      :model="mdl"
+      @cancel="handleCancel"
+      @ok="handleOk" />
+
+    <step-by-step-modal ref="modal" @ok="handleOk" />
+
   </page-header-wrapper>
 </template>
 
 <script>
-import moment from 'moment'
-import { STable, Ellipsis } from '@/components'
+import TableListNew from '@/components/TableNew/TableListNew'
 import { getRoleList, getServiceList } from '@/api/manage'
-import StepByStepModal from './modules/StepByStepModal'
-import CreateForm from './modules/CreateForm'
-import Tree from './tree'
-import { EventBus } from '../../components/event-bus'
-import CircleTip from './circle-tip'
-import QueryFilter from './query-filter'
+import StepByStepModal from '@/views/list/modules/StepByStepModal'
+import CreateForm from '@/views/list/modules/CreateForm'
 
 const validatePass = (rule, value, callback) => {
   if (value === '') {
-    callback(new Error('Please input the password'))
+    callback(new Error('请输入内容'))
   } else {
     if (this.ruleForm.checkPass !== '') {
       this.$refs.ruleForm.validateField('checkPass')
@@ -211,7 +118,6 @@ const validatePass = (rule, value, callback) => {
     callback()
   }
 }
-
 const columns = [
   {
     title: '#',
@@ -295,44 +201,19 @@ const columns = [
     valueType: 'dateTime'
   }
 ]
+
 export default {
   name: 'TableList',
   components: {
-    STable,
-    Ellipsis,
+    TableListNew,
     CreateForm,
-    StepByStepModal,
-    Tree,
-    CircleTip,
-    QueryFilter
+    StepByStepModal
   },
   data () {
     return {
-      pagination: {
-        'total': 85,
-        'show-total': (total, range) => `${this.$t('pagination.total.range')}${range[0]}-${range[1]} ${this.$t('pagination.total.total')} ${total} ${this.$t('pagination.total.item')}`,
-        'page-size': 20,
-        'default-current': 1
-      },
-      indeterminate: false,
-      checkAll: true,
-      align: {
-        // points: ['tl', 'tr'], // align top left point of sourceNode with top right point of targetNode
-        // offset: [10, 20], // the offset sourceNode by 10px in x and 20px in y,
-        // targetOffset: ['30%', '40%'], // the offset targetNode by 30% of targetNode width in x and 40% of targetNode height in y,
-        // overflow: { adjustX: true, adjustY: true }
-      },
       columns,
-      visibleColumnsSettings: false,
-      // create model
-      visible: false,
-      confirmLoading: false,
-      mdl: null,
-      // 高级搜索 展开/关闭
-      advanced: false,
       // 查询参数
-      queryParam: {
-      },
+      queryParam: {},
       // 加载数据方法 必须为 Promise 对象
       loadData: (parameter, queryParam) => {
         const requestParameters = Object.assign({}, parameter, this.queryParam)
@@ -341,149 +222,39 @@ export default {
           return res.result
         })
       },
-      selectedRowKeys: [],
-      selectedRows: [],
-      rowStriped: false,
-      tableHeight: 'default',
-      heightObj: {
-        default: this.$t('tableToolBar.densityLarger'),
-        middle: this.$t('tableToolBar.densityMiddle'),
-        small: this.$t('tableToolBar.densitySmall')
-      },
-      isFull: false,
-      slotsExchange: {},
+      // create model
+      visible: false,
+      confirmLoading: false,
+      mdl: null,
       visibleDrawer: false
     }
   },
   created () {
     getRoleList({ t: new Date() })
   },
-  watch: {
-    columns (newVal) {
-      console.log('改变父', newVal)
-    }
-  },
+  watch: {},
   computed: {
-    rowSelection () {
+    tableSettings () {
       return {
-        selectedRowKeys: this.selectedRowKeys,
-        onChange: this.onSelectChange
+        headerTitle: '查询表格',
+        tooltip: '查询表格提示',
+        columns: this.columns,
+        loadData: this.loadData,
+        toolBarRender: true,
+        options: {
+          intervalTexture: true, // 斑马线
+          reload: true,
+          density: true, // 密度
+          fullScreen: true, // 全屏
+          setting: true // 列设置
+        },
+        submitText: '查询1',
+        resetText: '重置2'
       }
     }
   },
-  mounted () {
-    this.slotsExchange = this.$refs.table.$slots
-    EventBus.$on('multiSelect', (state) => {
-      if (state === 'no') {
-        this.checkAll = false
-        this.indeterminate = false
-      } else if (state === 'all') {
-        this.checkAll = true
-        this.indeterminate = false
-      } else if (state === 'part') {
-        this.checkAll = false
-        this.indeterminate = true
-      }
-    })
-    EventBus.$on('search', () => {
-      this.search()
-    })
-  },
+  mounted () {},
   methods: {
-    search () {
-      this.$refs.table.refresh(true)
-    },
-    // search () {
-    //   // $refs.table.refresh(true)
-    //   this.$refs.ruleFormTemp.validate(valid => {
-    //     if (valid) {
-    //       alert('submit!')
-    //     } else {
-    //       console.log('error submit!!')
-    //       return false
-    //     }
-    //   })
-    // },
-    setRow (record, index) {
-      this.visibleDrawer = true
-    },
-    onClose () {
-      this.visibleDrawer = false
-    },
-    afterVisibleChange (val) {
-      console.log('visible', val)
-    },
-    onCheckAllChange (e) {
-      this.indeterminate = false
-      const checked = e.target.checked
-      this.checkAll = checked
-      EventBus.$emit('multiAll', checked)
-      // Object.assign(this, {
-      //   checkedList: e.target.checked ? plainOptions : [],
-      //   indeterminate: false,
-      //   checkAll: e.target.checked
-      // })
-    },
-    tableReset () {
-      this.$refs.tree.tableReset()
-    },
-    showFull (e) {
-      var full = document.getElementById('table')
-      this.launchIntoFullscreen(full)
-      this.isFull = true
-    },
-
-    delFull () {
-      this.isFull = false
-      this.exitFullscreen()
-    },
-    launchIntoFullscreen (element) {
-      if (element.requestFullscreen) {
-        element.requestFullscreen()
-      } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen()
-      } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen()
-      } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen()
-      }
-    },
-    exitFullscreen () {
-      if (document.exitFullscreen) {
-        document.exitFullscreen()
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen()
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen()
-      }
-    },
-    hide () {
-      this.visibleColumnsSettings = false
-    },
-    height ({ key }) {
-      console.log(key)
-      this.tableHeight = key
-    },
-    onChange (checked) {
-      this.rowStriped = checked
-    },
-    customRow (record, index) {
-      const rowClass = index % 2 && this.rowStriped ? 'ant-pro-table-row-striped' : ''
-      return {
-        props: {},
-        attrs: { class: rowClass },
-        on: {
-          click: (event) => {},
-          dblclick: (event) => {},
-          contextmenu: (event) => {},
-          mouseenter: (event) => {},
-          mouseleave: (event) => {}
-        }
-      }
-    },
-    reload () {
-      this.$refs.table.refresh()
-    },
     handleAdd () {
       this.mdl = null
       this.visible = true
@@ -492,6 +263,22 @@ export default {
       // this.visible = true
       this.$refs.modal.visible = true
       this.mdl = { ...record }
+    },
+    handleSub (record) {
+      if (record.status !== 0) {
+        this.$message.info(`${record.no} 订阅成功`)
+      } else {
+        this.$message.error(`${record.no} 订阅失败，规则已关闭`)
+      }
+    },
+    setRow (record, index) {
+      this.visibleDrawer = true
+    },
+    onClose () {
+      this.visibleDrawer = false
+    },
+    afterVisibleChange (val) {
+      console.log('visible', val)
     },
     handleOk () {
       const form = this.$refs.createModal.form
@@ -527,7 +314,6 @@ export default {
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('新增成功')
             })
           }
@@ -538,116 +324,12 @@ export default {
     },
     handleCancel () {
       this.visible = false
-
       const form = this.$refs.createModal.form
       form.resetFields() // 清理表单数据（可不做）
-    },
-    handleSub (record) {
-      if (record.status !== 0) {
-        this.$message.info(`${record.no} 订阅成功`)
-      } else {
-        this.$message.error(`${record.no} 订阅失败，规则已关闭`)
-      }
-    },
-    onSelectChange (selectedRowKeys, selectedRows) {
-      this.selectedRowKeys = selectedRowKeys
-      this.selectedRows = selectedRows
-    },
-    toggleAdvanced () {
-      this.advanced = !this.advanced
-    },
-    resetSearchForm () {
-      this.queryParam = {
-        date: moment(new Date())
-      }
     }
   }
 }
 </script>
 
 <style lang="less">
-.card-margin {
-  margin-bottom: 16px;
-}
-.ant-pro-table-list-toolbar {
-  overflow-x: auto;
-  overflow-y: hidden;
-  .ant-pro-table-list-toolbar-container {
-    display: flex;
-    justify-content: space-between;
-    height: 64px;
-    // padding: 0 24px;
-    line-height: 64px;
-    .ant-pro-table-list-toolbar-left {
-      display: flex;
-      justify-content: flex-start;
-      .ant-pro-table-list-toolbar-title {
-        color: rgba(0, 0, 0, 0.85);
-        font-size: 16px;
-        font-family: PingFangSC-Medium;
-      }
-    }
-    .ant-pro-table-list-toolbar-right {
-      display: flex;
-      justify-content: flex-end;
-      .ant-space-align-center {
-        align-items: center;
-      }
-      .ant-space {
-        display: inline-flex;
-      }
-      .ant-pro-table-list-toolbar-divider {
-        margin-right: -8px;
-        margin-left: 8px;
-      }
-      .ant-pro-table-list-toolbar-setting-item {
-        margin-left: 16px;
-        font-size: 16px;
-        cursor: pointer;
-      }
-    }
-  }
-}
-.ant-pro-table-column-setting-list-item-option {
-    display: none;
-    float: right;
-    cursor: pointer;
-}
-.ant-table-wrapper {
-  .ant-pro-table-row-striped {
-    background: #fafafa;
-  }
-}
-.toolbar-height {
-  width: 80px;
-}
-
-/* 描述列表 */
-.ant-descriptions-title-inner {
-    flex: auto;
-    overflow: hidden;
-    color: rgba(0,0,0,.85);
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 1.5715;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-.ant-descriptions-extra {
-    margin-left: auto;
-    color: rgba(0,0,0,.85);
-    font-size: 14px;
-    .ant-space-align-center {
-    align-items: center;
-}
-
-.ant-space {
-    display: inline-flex;
-}
-}
-.ant-descriptions-title {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
 </style>

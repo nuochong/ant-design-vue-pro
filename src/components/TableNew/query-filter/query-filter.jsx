@@ -1,14 +1,16 @@
 import PropTypes from 'ant-design-vue/es/_util/vue-types'
 import './query-filter.css'
-import { EventBus } from '../../components/event-bus'
+import { EventBus } from '../../event-bus'
 // import 'ant-design-vue/es/layout/style'
 // import Layout from 'ant-design-vue/es/layout'
 import 'ant-design-vue/es/select/style'
 import Select from 'ant-design-vue/es/select'
 import ResponsiveObserve from 'ant-design-vue/es/_util/responsiveObserve'
 
-const WrapContentProps = {
-  columns: PropTypes.any
+export const WrapContentProps = {
+  columns: PropTypes.array,
+  submitText: PropTypes.string,
+  resetText: PropTypes.string
 }
 
 const QueryFilter = {
@@ -67,6 +69,8 @@ const QueryFilter = {
     }
   },
   mounted () {
+    console.log('submitText', this.submitText)
+    console.log('resetText', this.resetText)
     this.$nextTick(() => {
       this.token = ResponsiveObserve.subscribe(screens => {
         this.screens = screens
@@ -239,10 +243,10 @@ const QueryFilter = {
               <a-col {...{ props: { ...this.baseLayout } } } offset={this.btnOffset}>
                 {/* <span class="table-page-search-submitButtons" style={this.advanced && { float: 'right', overflow: 'hidden' } || {}}> */}
                 <span class="table-page-search-submitButtons" style={{ ...btnHidden, float: 'right' }}>
-                  <a-button type="primary" onClick={() => { this.search() }}>{this.$t('tableForm.search')}</a-button>
-                  <a-button style="margin-left: 8px" onClick={() => { this.reset() }}>{this.$t('tableForm.reset')}</a-button>
+                  <a-button type="primary" onClick={() => { this.search() }}>{this.submitText || this.$t('tableForm.search')}</a-button>
+                  <a-button style="margin-left: 8px" onClick={() => { this.reset() }}>{this.resetText || this.$t('tableForm.reset')}</a-button>
                   <a onClick={() => { this.toggleAdvanced() }} style="margin-left: 8px">
-                    {this.advanced ? `${this.$t('tableForm.collapsed')}` : `${this.$t('tableForm.expand')}`}
+                    {this.advanced ? `${this.$t('tableForm.expand')}` : `${this.$t('tableForm.collapsed')}`}
                     <a-icon type={this.advanced ? 'up' : 'down'} style="margin-left: 0.5em;" />
                   </a>
                 </span>

@@ -2,7 +2,7 @@
 import 'ant-design-vue/es/tree/style'
 import Tree from 'ant-design-vue/es/tree'
 import dataDarg from './data-darg'
-import { EventBus } from '../../components/event-bus'
+import { EventBus } from '../event-bus'
 // const merge = require('deepmerge')
 // var clone = require('clone')
 // import CircularJSON from 'circular-json'

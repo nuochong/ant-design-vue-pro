@@ -3,7 +3,7 @@
 
     <QueryFilter :columns="columns" :advanced="true" :queryParam="queryParam"></QueryFilter>
 
-    <a-card :bordered="false" id="table">
+    <a-card :bordered="false" id="table" class="ant-table-container">
 
       <div class="ant-pro-table-list-toolbar">
         <div class="ant-pro-table-list-toolbar-container">
@@ -23,7 +23,7 @@
               <div class="ant-space-item">
                 <div class="ant-pro-table-list-toolbar-setting-item">
                   <!-- <a-tooltip title="斑马纹" :getPopupContainer="e=> e"> -->
-                  <a-tooltip title="斑马纹">
+                  <a-tooltip :title="$t('tableToolBar.intervalTexture')">
                     <span>
                       <a-switch v-model="rowStriped" @change="onChange" :style="{top:'-2px'}"/>
                     </span>
@@ -37,7 +37,7 @@
             </div>
             <div class="ant-pro-table-list-toolbar-setting-item">
               <!-- <a-tooltip title="刷新" :getPopupContainer="e=> e"> -->
-              <a-tooltip title="刷新">
+              <a-tooltip :title="$t('tableToolBar.reload')">
                 <a-icon type="reload" @click="reload" />
               </a-tooltip>
             </div>
@@ -46,7 +46,7 @@
               <!-- <a-dropdown :trigger="['click']" :placement="'bottomRight'" :overlayClassName="'toolbar-height'" :getPopupContainer="e=> e"> -->
               <a-dropdown :trigger="['click']" :placement="'bottomRight'" :overlayClassName="'toolbar-height'" >
                 <!-- <a-tooltip title="密度" :getPopupContainer="e=> e"> -->
-                <a-tooltip title="密度">
+                <a-tooltip :title="$t('tableToolBar.density')">
                   <a-icon type="column-height" />
                 </a-tooltip>
                 <a-menu slot="overlay" @click="height" selectable :selectedKeys="[tableHeight]">
@@ -59,17 +59,17 @@
             </div>
             <div class="ant-pro-table-list-toolbar-setting-item">
               <!-- <a-tooltip title="列设置" :getPopupContainer="e=> e"> -->
-              <a-tooltip title="列设置" >
+              <a-tooltip :title="$t('tableToolBar.columnSetting')" >
                 <!-- <a-popover v-model="visibleColumnsSettings" trigger="click" placement="bottomRight" :getPopupContainer="e=> e" overlayClassName="ant-pro-table-column-setting-overlay"> -->
                 <a-popover v-model="visibleColumnsSettings" trigger="click" placement="bottomRight" overlayClassName="ant-pro-table-column-setting-overlay" :align="align">
                   <a-icon type="setting" @click="hide" />
                   <div class="ant-pro-table-column-setting-title" slot="title">
                     <label class="ant-checkbox-wrapper ant-checkbox-wrapper-checked">
                       <a-checkbox :indeterminate="indeterminate" :checked="checkAll" @change="onCheckAllChange">
-                        列展示
+                        {{ $t('tableToolBar.columnDisplay') }}
                       </a-checkbox>
                     </label>
-                    <a href="javascript:;" @click="tableReset">重置</a>
+                    <a href="javascript:;" @click="tableReset">{{ $t('tableToolBar.reset') }}</a>
                   </div>
                   <div slot="content">
                     <tree :columns.sync="columns" :slotsExchange="slotsExchange" ref="tree" />
@@ -77,12 +77,12 @@
                 </a-popover>
               </a-tooltip>
             </div>
-            <!-- <div class="ant-pro-table-list-toolbar-setting-item">
-              <a-tooltip title="全屏"  :getPopupContainer="e=> e">
+            <div class="ant-pro-table-list-toolbar-setting-item">
+              <a-tooltip :title="$t(!isFull ? 'tableToolBar.fullScreen' : 'tableToolBar.exitFullScreen')" :getPopupContainer="e=> e">
                 <a-icon type="fullscreen" @click="showFull($event)" v-if="!isFull"/>
                 <a-icon type="fullscreen" @click="delFull($event)" v-else/>
               </a-tooltip>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -114,26 +114,15 @@
         :alert="true"
         :rowSelection="rowSelection"
         :customRow="customRow"
-        showPagination="auto">
+        showPagination="auto"
+        :pagination="pagination"
+        :bordered="false">
         <span slot="name" slot-scope="text, record, index">
           <a @click="setRow(record,index)">{{ text }}</a>
         </span>
-        <!-- <span slot="customTitle">
-          规则编号
-          <a-tooltip title="规则名称是唯一的 key">
-            <a-icon type="exclamation-circle" />
-          </a-tooltip>
-        </span> -->
         <span slot="serial" slot-scope="text, record, index">
           {{ index + 1 }}
         </span>
-        <!-- <span slot="status" slot-scope="text">
-          <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
-        </span> -->
-        <span slot="description" slot-scope="text">
-          <ellipsis :length="4" tooltip>{{ text }}</ellipsis>
-        </span>
-
         <span slot="action" slot-scope="text, record">
           <template>
             <a @click="handleEdit(record)">配置</a>
@@ -205,7 +194,6 @@
 import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
 import { getRoleList, getServiceList } from '@/api/manage'
-
 import StepByStepModal from './modules/StepByStepModal'
 import CreateForm from './modules/CreateForm'
 import Tree from './tree'
@@ -229,15 +217,14 @@ const columns = [
     title: '#',
     dataIndex: '#',
     scopedSlots: { customRender: 'serial' },
-    valueType: 'text',
-    formItemProps: {
-      rules: { validator: validatePass, trigger: 'change' }
-    }
+    valueType: 'text'
   },
   {
     title: '规则名称',
     dataIndex: 'description',
     tip: '规则名称是唯一的 key',
+    copyable: true, // 是否支持复制
+    ellipsis: true, // 是否自动缩略
     formItemProps: {
       rules: [
         {
@@ -247,21 +234,23 @@ const columns = [
         }
       ]
     },
-    scopedSlots: { customRender: 'name' },
+    // scopedSlots: { customRender: 'name' },
     valueType: 'text',
     hideInSearch: false
   },
   {
     title: '规则编号',
     dataIndex: 'no',
-    scopedSlots: { title: 'customTitle' },
     valueType: 'text',
-    hideInSearch: true
+    hideInSearch: false,
+    formItemProps: {
+      rules: { validator: validatePass, trigger: 'change' }
+    }
   },
   // {
   //   title: '描述',
   //   dataIndex: 'description',
-  //   scopedSlots: { customRender: 'description' }
+  //   ellipsis: true,
   // },
   {
     title: '服务调用次数',
@@ -284,8 +273,7 @@ const columns = [
   {
     title: '状态',
     dataIndex: 'status',
-    // scopedSlots: { customRender: 'status' },
-    valueType: 'select',
+    valueType: 'option',
     valueEnum: {
       0: { text: '关闭', status: 'default' },
       1: { text: '运行中', status: 'processing' },
@@ -319,8 +307,13 @@ export default {
     QueryFilter
   },
   data () {
-    // this.columns = columns
     return {
+      pagination: {
+        'total': 85,
+        'show-total': (total, range) => `${this.$t('pagination.total.range')}${range[0]}-${range[1]} ${this.$t('pagination.total.total')} ${total} ${this.$t('pagination.total.item')}`,
+        'page-size': 20,
+        'default-current': 1
+      },
       indeterminate: false,
       checkAll: true,
       align: {
@@ -341,7 +334,7 @@ export default {
       queryParam: {
       },
       // 加载数据方法 必须为 Promise 对象
-      loadData: (parameter) => {
+      loadData: (parameter, queryParam) => {
         const requestParameters = Object.assign({}, parameter, this.queryParam)
         console.log('loadData request parameters:', requestParameters)
         return getServiceList(requestParameters).then((res) => {
@@ -353,9 +346,9 @@ export default {
       rowStriped: false,
       tableHeight: 'default',
       heightObj: {
-        default: '默认',
-        middle: '中等',
-        small: '紧凑'
+        default: this.$t('tableToolBar.densityLarger'),
+        middle: this.$t('tableToolBar.densityMiddle'),
+        small: this.$t('tableToolBar.densitySmall')
       },
       isFull: false,
       slotsExchange: {},
@@ -367,7 +360,7 @@ export default {
   },
   watch: {
     columns (newVal) {
-      console.log('改变了父', newVal)
+      console.log('改变父', newVal)
     }
   },
   computed: {
@@ -393,7 +386,6 @@ export default {
       }
     })
     EventBus.$on('search', () => {
-      console.log('父组件搜索')
       this.search()
     })
   },
@@ -401,6 +393,17 @@ export default {
     search () {
       this.$refs.table.refresh(true)
     },
+    // search () {
+    //   // $refs.table.refresh(true)
+    //   this.$refs.ruleFormTemp.validate(valid => {
+    //     if (valid) {
+    //       alert('submit!')
+    //     } else {
+    //       console.log('error submit!!')
+    //       return false
+    //     }
+    //   })
+    // },
     setRow (record, index) {
       this.visibleDrawer = true
     },
@@ -470,12 +473,10 @@ export default {
         props: {},
         attrs: { class: rowClass },
         on: {
-          // 事件
-          click: (event) => {
-          }, // 点击行
+          click: (event) => {},
           dblclick: (event) => {},
           contextmenu: (event) => {},
-          mouseenter: (event) => {}, // 鼠标移入行
+          mouseenter: (event) => {},
           mouseleave: (event) => {}
         }
       }
@@ -511,7 +512,6 @@ export default {
               form.resetFields()
               // 刷新表格
               this.$refs.table.refresh()
-
               this.$message.info('修改成功')
             })
           } else {
@@ -576,7 +576,7 @@ export default {
     display: flex;
     justify-content: space-between;
     height: 64px;
-    padding: 0 24px;
+    // padding: 0 24px;
     line-height: 64px;
     .ant-pro-table-list-toolbar-left {
       display: flex;
