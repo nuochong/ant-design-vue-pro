@@ -1,8 +1,8 @@
 <template>
-  <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight" class="ant-pro-drop-down-global">
+  <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight" class="ant-pro-drop-down-global" :overlayStyle="{width: isMobile ? '100%' : 'auto'}">
     <span class="ant-pro-account-avatar">
       <a-avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" class="antd-pro-global-header-index-avatar" />
-      <span>{{ currentUser.name }}</span>
+      <span v-if="!isMobile">{{ currentUser.name }}</span>
     </span>
     <template v-slot:overlay>
       <a-menu class="ant-pro-drop-down menu" :selected-keys="[]">
@@ -44,6 +44,10 @@ export default {
     menu: {
       type: Boolean,
       default: true
+    },
+    isMobile: {
+      type: Boolean,
+      default: () => false
     }
   },
   data () {

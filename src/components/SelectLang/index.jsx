@@ -26,6 +26,10 @@ const SelectLang = {
     prefixCls: {
       type: String,
       default: 'ant-pro-drop-down'
+    },
+    isMobile: {
+      type: Boolean,
+      default: () => false
     }
   },
   components: {
@@ -51,7 +55,7 @@ const SelectLang = {
       </Menu>
     )
     return (
-      <Dropdown overlay={langMenu} placement="bottomRight">
+      <Dropdown overlay={langMenu} placement="bottomRight" overlayStyle={{ width: this.isMobile ? '100%' : 'auto' }}>
         <span class={prefixCls}>
         {/* <iconLang></iconLang> */}
         {/* <svg viewBox="0 0 24 24" focusable="false" width="1em" height="1em" fill="currentColor" aria-hidden="true">

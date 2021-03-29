@@ -19,12 +19,12 @@
       </a>
     </a-tooltip>
 
-    <notice-icon class="action"/>
-    <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" />
+    <notice-icon class="action" :isMobile="isMobile"/>
+    <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" :isMobile="isMobile"/>
     <span class="development-state">
       <a-tag color="orange" v-if="isDev ">dev</a-tag>
     </span>
-    <select-lang :class="prefixCls" />
+    <select-lang :class="prefixCls" :isMobile="isMobile"/>
   </div>
 </template>
 

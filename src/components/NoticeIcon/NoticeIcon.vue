@@ -15,7 +15,7 @@
     overlayClassName="antd-pro-components-header-dropdown-index-container"
     :getPopupContainer="() => $refs.noticeRef.parentElement"
     placement="bottomLeft"
-    :overlayStyle="{ width: '336px', top: '68px' }">
+    :overlayStyle="{ width: isMobile ? '100%' : '336px', top: '68px' }">
     <!-- <template slot="content"> -->
     <template slot="overlay" class="ant-dropdown-menu-nested-loading">
       <div>
@@ -160,6 +160,12 @@ import { i18nRender } from '@/locales'
 
 export default {
   name: 'HeaderNotice',
+  props: {
+    isMobile: {
+      type: Boolean,
+      default: () => false
+    }
+  },
   data () {
     return {
       i18nRender,
