@@ -7,6 +7,7 @@
     :handleMediaQuery="handleMediaQuery"
     :handleCollapse="handleCollapse"
     :i18nRender="i18nRender"
+    :logo="logo"
     v-bind="settings"
   >
     <!-- Ads begin
@@ -115,6 +116,7 @@ export default {
 
       // 是否手机模式
       isMobile: false,
+      logo: 'https://preview.pro.ant.design/static/logo.f0355d39.svg',
       footerData: {
         copyright: `${new Date().getFullYear()} 蚂蚁集团体验技术部出品`,
         links: [
