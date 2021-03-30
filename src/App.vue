@@ -1,6 +1,7 @@
 <template>
   <a-config-provider :locale="locale">
-    <div id="app">
+    <div id="app" class="app">
+      <div class="inner-spin"><a-spin size="large"></a-spin></div>
       <router-view/>
     </div>
   </a-config-provider>
@@ -26,3 +27,15 @@ export default {
   }
 }
 </script>
+
+<style lang="less">
+  .inner-spin {
+    position: absolute;
+    margin-top: 100px;
+    width: 100%;
+    text-align: center;
+  }
+  #app.app {
+    background-image: none;
+  }
+</style>
