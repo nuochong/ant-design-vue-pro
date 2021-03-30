@@ -74,7 +74,7 @@ export default {
       switcherIcon: (prop) => {
         return (
           <span>
-            <dataDarg></dataDarg>
+            {/* <dataDarg></dataDarg> */}
             <a-checkbox
               v-model={prop.isShow}
               onChange={(e) => {
