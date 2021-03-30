@@ -6,6 +6,8 @@
       :advanced="true"
       :queryParam="queryParam"
       :submitText="submitText"
+      :layout="layout"
+      :collapseRender="collapseRender"
       :resetText="resetText"></QueryFilter>
 
     <a-card :bordered="false" id="table" class="ant-table-container" :class="{'ant-table-container-no-toolbar':!toolBarRender}">
@@ -213,6 +215,7 @@ export default {
     }
   },
   mounted () {
+    console.log('hhhhhhhhhhhh', this)
     this.slotsExchange = this.$refs.table.$slots
     EventBus.$on('multiSelect', (state) => {
       if (state === 'no') {

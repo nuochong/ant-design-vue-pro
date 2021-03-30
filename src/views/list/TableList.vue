@@ -241,6 +241,8 @@ export default {
         columns: this.columns,
         loadData: this.loadData,
         toolBarRender: true,
+        layout: 'horizontal',
+        collapseRender: false,
         options: {
           intervalTexture: true, // 斑马线
           reload: true,

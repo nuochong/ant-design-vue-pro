@@ -7,15 +7,17 @@ import 'ant-design-vue/es/select/style'
 import Select from 'ant-design-vue/es/select'
 import ResponsiveObserve from 'ant-design-vue/es/_util/responsiveObserve'
 
-export const WrapContentProps = {
+export const QueryFilterProps = {
   columns: PropTypes.array,
   submitText: PropTypes.string,
-  resetText: PropTypes.string
+  resetText: PropTypes.string,
+  layout: PropTypes.oneOf(['vertical', 'horizontal']).def('horizontal'), // "vertical":垂直 "horizontal"：水平
+  collapseRender: PropTypes.bool.def(true)
 }
 
 const QueryFilter = {
   name: 'QueryFilter',
-  props: WrapContentProps,
+  props: QueryFilterProps,
   components: {
   },
   data () {
@@ -23,7 +25,7 @@ const QueryFilter = {
       screens: {},
       targetIndex: '',
       formLayout: 'inline',
-      layout: [
+      layoutBase: [
         { title: 'xs',
           value: null
         },
@@ -74,15 +76,15 @@ const QueryFilter = {
     this.$nextTick(() => {
       this.token = ResponsiveObserve.subscribe(screens => {
         this.screens = screens
-        for (const item in this.layout) {
-          this.layout[item].value = null
-          const title = this.layout[item].title
+        for (const item in this.layoutBase) {
+          this.layoutBase[item].value = null
+          const title = this.layoutBase[item].title
           if (this.screens[title]) {
-            this.layout[item].value = this.screens[title]
+            this.layoutBase[item].value = this.screens[title]
           }
         }
 
-        const temp = this.layout.slice().reverse()
+        const temp = this.layoutBase.slice().reverse()
         temp.some(item => {
           if (item.value) {
             this.targetIndex = item
@@ -90,11 +92,16 @@ const QueryFilter = {
           return item.value
         })
 
-        if (this.baseLayout[this.targetIndex.title] === 24) {
-          this.formLayout = 'vertical'
+        if (!this.layout) {
+          if (this.baseLayout[this.targetIndex.title] === 24) {
+            this.formLayout = 'vertical'
+          } else {
+            this.formLayout = 'inline'
+          }
         } else {
-          this.formLayout = 'inline'
+          this.formLayout = this.layout === 'horizontal' ? 'inline' : 'vertical'
         }
+
         this.handleCollsped()
       })
     })
@@ -238,9 +245,9 @@ const QueryFilter = {
           <a-form-model {...{ props: { model: this.queryParam } }} layout={this.formLayout} ref="ruleForm" >
             <a-row gutter={48}>
               {changeContent('topArr')}
-              {this.advanced && changeContent('bottomArr')}
+              { (this.advanced || !this.collapseRender) && changeContent('bottomArr')}
               {/* <a-col md={!this.advanced && 8 || 24} sm={24} offset={this.btnOffset}> */}
-              <a-col {...{ props: { ...this.baseLayout } } } offset={this.btnOffset}>
+              {this.collapseRender && <a-col {...{ props: { ...this.baseLayout } } } offset={this.btnOffset}>
                 {/* <span class="table-page-search-submitButtons" style={this.advanced && { float: 'right', overflow: 'hidden' } || {}}> */}
                 <span class="table-page-search-submitButtons" style={{ ...btnHidden, float: 'right' }}>
                   <a-button type="primary" onClick={() => { this.search() }}>{this.submitText || this.$t('tableForm.search')}</a-button>
@@ -250,7 +257,7 @@ const QueryFilter = {
                     <a-icon type={this.advanced ? 'up' : 'down'} style="margin-left: 0.5em;" />
                   </a>
                 </span>
-              </a-col>
+              </a-col>}
             </a-row>
           </a-form-model>
         </div>
