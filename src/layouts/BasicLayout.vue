@@ -190,6 +190,15 @@ export default {
         this.settings.contentWidth = CONTENT_WIDTH_TYPE.Fluid
         // this.settings.fixSiderbar = false
       }
+      const largeState = ['screen-lg', 'screen-xl', 'screen-xxl'].some(item => val[item] === true)
+      if (!this.isMobile && largeState) {
+        this.isMobile = false
+        this.collapsed = false
+      }
+      if (!this.isMobile && val['screen-md']) {
+        this.isMobile = false
+        this.collapsed = true
+      }
     },
     handleCollapse (val) {
       this.collapsed = val
