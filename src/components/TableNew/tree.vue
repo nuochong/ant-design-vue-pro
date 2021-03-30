@@ -1,8 +1,9 @@
 <script>
 import 'ant-design-vue/es/tree/style'
-import Tree, { TreeNode } from 'ant-design-vue/es/tree'
+import Tree from 'ant-design-vue/es/tree'
 import dataDarg from './data-darg'
 import { EventBus } from '../event-bus'
+const { TreeNode } = Tree
 
 export default {
   props: {

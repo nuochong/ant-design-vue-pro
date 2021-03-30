@@ -242,7 +242,7 @@ export default {
         loadData: this.loadData,
         toolBarRender: true,
         layout: 'horizontal',
-        collapseRender: false,
+        collapseRender: true,
         options: {
           intervalTexture: true, // 斑马线
           reload: true,
