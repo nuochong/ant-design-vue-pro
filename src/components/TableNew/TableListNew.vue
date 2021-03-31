@@ -23,58 +23,7 @@
             </div>
           </div>
           <div class="ant-pro-table-list-toolbar-right">
-            <div class="ant-pro-table-list-toolbar-setting-item ant-pro-table-list-toolbar-mini-search">
-              <div class="ant-pro-form-light-filter-container">
-                <div class="ant-pro-form-light-filter-item">
-                  <div class="ant-row ant-form-item" :class="{'ant-form-item-has-success': true}">
-                    <div class="ant-col ant-form-item-control">
-                      <div class="ant-form-item-control-input">
-                        <div class="ant-form-item-control-input-content">
-                          <a-dropdown v-model="visibleDropdown" :trigger="['click']">
-
-                            <span
-                              class="ant-pro-core-field-label ant-pro-core-field-label-middle  ant-pro-core-field-label-allow-clear"
-                              @click="e => {e.preventDefault(); this.endOpen = true}"
-                              :class="{'ant-pro-core-field-label-active': true}">
-                              <span title="2229999999">Name: 2229999999</span>
-                              <a-icon type="close" class="anticon anticon-close ant-pro-core-field-label-icon ant-pro-core-field-label-close"/>
-                              <a-icon type="down" class="anticon anticon-down ant-pro-core-field-label-icon ant-pro-core-field-label-arrow"/>
-                            </span>
-
-                            <!-- <a-menu slot="overlay">
-                              <a-menu-item key="0">
-                                <a href="http://www.alipay.com/">1st menu item</a>
-                              </a-menu-item>
-                            </a-menu> -->
-                            <template slot="overlay">
-                              <!-- <a-date-picker type="data" show-time placeholder="请选择" class="search-input" :open="endOpen"/> -->
-                              <div class="ant-pro-core-field-dropdown-overlay">
-                                <div class="ant-pro-core-field-dropdown-content">
-                                  <div class="ant-pro-field-light-wrapper-container">
-                                    <a-input placeholder="请输入" allowClear/>
-                                  </div>
-                                </div>
-                                <div class="ant-pro-core-dropdown-footer">
-                                  <a-button type="link" size="small" style="visibility: visible;">
-                                    清除
-                                  </a-button>
-                                  <a-button type="primary" size="small" @click="handleMenuClick">
-                                    确 认
-                                  </a-button>
-                                </div>
-                              </div>
-                            </template>
-                          </a-dropdown>
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
+            <QueryFilterMini></QueryFilterMini>
             <div class="ant-space ant-space-horizontal ant-space-align-center">
               <slot name="toolBarRender"></slot>
             </div>
@@ -162,6 +111,7 @@ import Tree from './tree'
 import { EventBus } from '../event-bus'
 import CircleTip from './circle-tip'
 import QueryFilter from './query-filter/query-filter'
+import QueryFilterMini from './query-filter-mini/query-filter-mini'
 import jsx from './jsx'
 
 export default {
@@ -208,12 +158,11 @@ export default {
     Tree,
     CircleTip,
     QueryFilter,
+    QueryFilterMini,
     jsx
   },
   data () {
     return {
-      visibleDropdown: false,
-      endOpen: false,
       pagination: {
         'total': 85,
         'show-total': (total, range) => `${this.$t('pagination.total.range')}${range[0]}-${range[1]} ${this.$t('pagination.total.total')} ${total} ${this.$t('pagination.total.item')}`,
@@ -506,131 +455,5 @@ export default {
 }
 .ant-table-container.ant-table-container-no-toolbar {
   padding-top: 16px;
-}
-</style>
-
-<style>
-.ant-pro-core-field-dropdown-overlay {
-    min-width: 200px;
-    margin-top: 4px;
-    background-color: #fff;
-    box-shadow: 0 1px 2px -2px rgb(0 0 0 / 16%), 0 3px 6px 0 rgb(0 0 0 / 12%), 0 5px 12px 4px rgb(0 0 0 / 9%);
-}
-.ant-pro-core-field-dropdown-content {
-    padding: 16px;
-}
-.ant-pro-core-dropdown-footer {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px 16px 16px 8px;
-    border-top: 1px solid #f0f0f0;
-}
-.ant-pro-table-list-toolbar-mini-search {
-  margin-right: 16px;
-}
-</style>
-
-<style>
-.ant-pro-form-light-filter-container {
-  display: flex;
-  flex-wrap: wrap;
-  /* margin-top: -8px;
-  margin-right: -4px; */
-}
-.ant-pro-form-light-filter-item:not(:last-child) {
-    margin-right: 8px;
-}
-.ant-pro-form-light-filter-item {
-    margin-top: 12px;
-}
-.ant-pro-form-light-filter .ant-form-item {
-    margin-bottom: 0;
-}
-.ant-form-item {
-    box-sizing: border-box;
-    padding: 0;
-    color: rgba(0,0,0,.85);
-    font-size: 14px;
-    font-variant: tabular-nums;
-    line-height: 1.5715;
-    list-style: none;
-    font-feature-settings: "tnum","tnum";
-    margin: 0 0 24px;
-    vertical-align: top;
-}
-.ant-row {
-    display: flex;
-    flex-flow: row wrap;
-}
-.ant-form-item-control:first-child:not([class^=ant-col-]):not([class*=" ant-col-"]) {
-    width: 100%;
-}
-.ant-form-horizontal .ant-form-item-control {
-    flex: 1 1;
-}
-.ant-form-item-control {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-.ant-col {
-    position: relative;
-    max-width: 100%;
-    min-height: 1px;
-}
-.ant-form-item-control-input {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 32px;
-}
-.ant-form-item-control-input-content {
-    flex: auto;
-    max-width: 100%;
-}
-.ant-pro-core-field-dropdown-label {
-    cursor: pointer;
-}
-
-.ant-pro-core-field-label {
-    display: inline-block;
-    height: 30px;
-    padding: 0 4px;
-    font-size: 14px;
-    line-height: 30px;
-    border-radius: 2px;
-    cursor: pointer;
-}
-.ant-pro-core-field-label-active {
-    padding: 0 12px;
-    background-color: rgba(0,0,0,.04);
-}
-.ant-pro-core-field-label-icon.ant-pro-core-field-label-close {
-    display: none;
-    margin-top: -4px;
-    padding: 3px;
-    color: #fff;
-    font-size: 8px;
-    background-color: rgba(0,0,0,.25);
-    border-radius: 50%;
-}
-
-.ant-pro-core-field-label-icon {
-    margin-top: -2px;
-    margin-left: 4px;
-    padding: 1px;
-    color: rgba(0,0,0,.45);
-    font-size: 12px;
-    vertical-align: middle;
-}
-
-.ant-pro-core-field-label-active.ant-pro-core-field-label-allow-clear:hover:not(.ant-pro-core-field-label-disabled) .ant-pro-core-field-label-close {
-    display: inline-block;
-}
-.ant-pro-core-field-label-active.ant-pro-core-field-label-allow-clear:hover:not(.ant-pro-core-field-label-disabled) .ant-pro-core-field-label-arrow {
-    display: none;
-}
-.ant-pro-core-field-label-icon.ant-pro-core-field-label-close:hover {
-    background-color: rgba(0,0,0,.45);
 }
 </style>
