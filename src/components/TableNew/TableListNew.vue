@@ -8,7 +8,10 @@
       :submitText="submitText"
       :layout="layout"
       :collapseRender="collapseRender"
+      :optionRender="optionRender"
       :resetText="resetText"></QueryFilter>
+
+    <jsx :jsx="tableExtraRender" v-if="tableExtraRender($props)"></jsx>
 
     <a-card :bordered="false" id="table" class="ant-table-container" :class="{'ant-table-container-no-toolbar':!toolBarRender}">
 
@@ -192,6 +195,11 @@ export default {
       type: [Boolean, Object],
       required: false,
       default: true
+    },
+    tableExtraRender: {
+      type: Function,
+      required: false,
+      default: () => {}
     }
   },
   components: {
@@ -616,4 +624,13 @@ export default {
     vertical-align: middle;
 }
 
+.ant-pro-core-field-label-active.ant-pro-core-field-label-allow-clear:hover:not(.ant-pro-core-field-label-disabled) .ant-pro-core-field-label-close {
+    display: inline-block;
+}
+.ant-pro-core-field-label-active.ant-pro-core-field-label-allow-clear:hover:not(.ant-pro-core-field-label-disabled) .ant-pro-core-field-label-arrow {
+    display: none;
+}
+.ant-pro-core-field-label-icon.ant-pro-core-field-label-close:hover {
+    background-color: rgba(0,0,0,.45);
+}
 </style>

@@ -243,6 +243,27 @@ export default {
         toolBarRender: true,
         layout: 'horizontal',
         collapseRender: true,
+        optionRender: (searchConfig, formProps) => {
+          console.log('自定搜索栏', searchConfig, formProps)
+          return <span>
+            <a-button type="primary" onClick={() => { formProps.submit() }}>{searchConfig.submitText }</a-button>
+            <a-button style="margin-left: 8px" onClick={() => { formProps.resetFields() }}>{searchConfig.resetText}</a-button>
+            <a-button style="margin-left: 8px" >导出</a-button>
+          </span>
+        },
+        tableExtraRender: (props) => {
+          return <a-card class="card-margin">
+            <a-descriptions size="small" column={3}>
+              <a-descriptions-item label="Row">2</a-descriptions-item>
+              <a-descriptions-item label="Created">Lili Qu</a-descriptions-item>
+              <a-descriptions-item label="Association">
+                <a>421421</a>
+              </a-descriptions-item>
+              <a-descriptions-item label="Creation Time">2017-01-10</a-descriptions-item>
+              <a-descriptions-item label="Effective Time">2017-10-10</a-descriptions-item>
+            </a-descriptions>
+          </a-card>
+        },
         options: {
           intervalTexture: true, // 斑马线
           reload: true,
