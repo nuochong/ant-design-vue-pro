@@ -55,8 +55,11 @@ const SelectLang = {
         ))}
       </Menu>
     )
+    const trigger = ['hover']
+    this.isMobile && trigger.push('click')
+
     return (
-      <Dropdown overlay={langMenu} placement="bottomRight" overlayStyle={{ width: this.isMobile ? '100%' : 'auto' }}>
+      <Dropdown overlay={langMenu} placement="bottomRight" overlayStyle={{ width: this.isMobile ? '100%' : 'auto' }} trigger={trigger}>
         <span class={prefixCls}>
           <IconLang title={i18nRender('navBar.lang')}></IconLang>
           {/* <Icon type="global" title={i18nRender('navBar.lang')} /> */}

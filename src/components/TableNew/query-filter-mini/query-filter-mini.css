@@ -122,3 +122,11 @@
 .ant-pro-core-field-label-icon.ant-pro-core-field-label-close:hover {
   background-color: rgba(0, 0, 0, 0.45);
 }
+
+.data-picker .search-input > div input,
+.data-picker .search-input > div i {
+  visibility: hidden;
+}
+.table-picker-wrap .ant-calendar-input-wrap {
+  display: none;
+}

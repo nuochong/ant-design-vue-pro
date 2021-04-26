@@ -1,8 +1,6 @@
 import PropTypes from 'ant-design-vue/es/_util/vue-types'
 import './query-filter.css'
 import { EventBus } from '../../event-bus'
-// import 'ant-design-vue/es/layout/style'
-// import Layout from 'ant-design-vue/es/layout'
 import 'ant-design-vue/es/select/style'
 import Select from 'ant-design-vue/es/select'
 import ResponsiveObserve from 'ant-design-vue/es/_util/responsiveObserve'
@@ -14,6 +12,15 @@ export const QueryFilterProps = {
   layout: PropTypes.oneOf(['vertical', 'horizontal']).def('horizontal'), // "vertical":垂直 "horizontal"：水平
   collapseRender: PropTypes.bool.def(true),
   optionRender: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]).def(undefined)
+}
+
+export const labelTip = (h, item) => {
+  return <span>
+    {item.title || item.titleOld}&nbsp;
+    <a-tooltip title={item.tip}>
+      <a-icon type="exclamation-circle" />
+    </a-tooltip>
+  </span>
 }
 
 const QueryFilter = {
@@ -167,7 +174,6 @@ const QueryFilter = {
     console.log('this.queryParam', this.queryParam)
   },
   render (h) {
-    // const { columns } = this.$props
     const proFormText = (item) => {
       // const asyncProps = {
       //   on: {
@@ -212,19 +218,12 @@ const QueryFilter = {
       topArr: this.topArr,
       bottomArr: this.bottomArr
     }
-    const labelTip = (item) => {
-      return <span>
-        {item.title || item.titleOld}&nbsp;
-        <a-tooltip title={item.tip}>
-          <a-icon type="exclamation-circle" />
-        </a-tooltip>
-      </span>
-    }
+
     const changeContent = (type) => {
       return changeContentMap[type].map((item) => {
         let label = item.title
         if (item.tip) {
-          label = labelTip(item)
+          label = labelTip(h, item)
         }
 
         const content = formTypeMap[item.valueType]

@@ -1,5 +1,5 @@
 <template>
-  <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight" class="ant-pro-drop-down-global" :overlayStyle="{width: isMobile ? '100%' : 'auto'}">
+  <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight" class="ant-pro-drop-down-global" :overlayStyle="{width: isMobile ? '100%' : 'auto'}" :trigger="trigger">
     <span class="ant-pro-account-avatar">
       <a-avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" class="antd-pro-global-header-index-avatar" />
       <span v-if="!isMobile">{{ currentUser.name }}</span>
@@ -53,6 +53,13 @@ export default {
   data () {
     return {
       i18nRender
+    }
+  },
+  computed: {
+    trigger () {
+      const trigger = ['hover']
+      this.isMobile && trigger.push('click')
+      return trigger
     }
   },
   methods: {

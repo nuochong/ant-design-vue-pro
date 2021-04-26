@@ -9,7 +9,8 @@
       :layout="layout"
       :collapseRender="collapseRender"
       :optionRender="optionRender"
-      :resetText="resetText"></QueryFilter>
+      :resetText="resetText"
+      v-if="filterType === 'light'"></QueryFilter>
 
     <jsx :jsx="tableExtraRender" v-if="tableExtraRender($props)"></jsx>
 
@@ -23,7 +24,10 @@
             </div>
           </div>
           <div class="ant-pro-table-list-toolbar-right">
-            <QueryFilterMini></QueryFilterMini>
+            <QueryFilterMini
+              :columns="columns"
+              :queryParam="queryParam"
+              v-if="filterType === 'light'"></QueryFilterMini>
             <div class="ant-space ant-space-horizontal ant-space-align-center">
               <slot name="toolBarRender"></slot>
             </div>
@@ -98,7 +102,7 @@
         </template>
       </s-table> -->
 
-      <jsx :jsx="renderFn"></jsx>
+      <jsx :jsx="renderFn" ref="tableRef"></jsx>
 
     </a-card>
   </div>
@@ -150,6 +154,11 @@ export default {
       type: Function,
       required: false,
       default: () => {}
+    },
+    filterType: {
+      type: String,
+      required: false,
+      default: 'query'// "light"
     }
   },
   components: {
@@ -227,7 +236,6 @@ export default {
   },
   mounted () {
     console.log('hhhhhhhhhhhh', this)
-    this.slotsExchange = this.$refs.table.$slots
     EventBus.$on('multiSelect', (state) => {
       if (state === 'no') {
         this.checkAll = false
@@ -240,9 +248,16 @@ export default {
         this.indeterminate = true
       }
     })
+    EventBus.$on('searchData', (queryParam) => {
+      console.log('接收传值', queryParam)
+      this.queryParam = queryParam
+    })
     EventBus.$on('search', () => {
+      console.log('接收搜索')
       this.search()
     })
+    // bug
+    this.slotsExchange = this.$refs.tableRef.$refs.table.$slots
   },
   methods: {
     handleMenuClick (e) {
@@ -255,7 +270,7 @@ export default {
       const scopedSlots = {}
 
       return <STable
-      {...{ scopedSlots: { ...this.$scopedSlots, ...scopedSlots } }}
+      {...{ ref: 'table', scopedSlots: { ...this.$scopedSlots, ...scopedSlots } }}
         ref="table"
         size={this.tableHeight}
         rowKey="key"
@@ -271,7 +286,9 @@ export default {
       </STable>
     },
     search () {
-      this.$refs.table.refresh(true)
+      console.log('🚀 ~ file: TableListNew.vue ~ line 286 ~ search ~ this.$refs.table', this)
+      this.reload(true)
+      // this.$refs.tableRef.$refs.table.refresh(true)
     },
     // search () {
     //   this.$refs.ruleFormTemp.validate(valid => {
@@ -350,8 +367,8 @@ export default {
         }
       }
     },
-    reload () {
-      this.$refs.table.refresh()
+    reload (value = false) {
+      this.$refs.tableRef.$refs.table.refresh(value)
     },
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
@@ -456,4 +473,12 @@ export default {
 .ant-table-container.ant-table-container-no-toolbar {
   padding-top: 16px;
 }
+
+.ant-table-column-title .anticon.anticon-exclamation-circle {
+  cursor: pointer;
+}
+.ant-card.card-margin.card-search .anticon.anticon-exclamation-circle{
+  cursor:help
+}
+
 </style>

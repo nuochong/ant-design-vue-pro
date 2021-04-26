@@ -107,6 +107,7 @@ import TableListNew from '@/components/TableNew/TableListNew'
 import { getRoleList, getServiceList } from '@/api/manage'
 import StepByStepModal from '@/views/list/modules/StepByStepModal'
 import CreateForm from '@/views/list/modules/CreateForm'
+// import moment from 'moment'
 
 const validatePass = (rule, value, callback) => {
   if (value === '') {
@@ -216,6 +217,9 @@ export default {
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
       loadData: (parameter, queryParam) => {
+        console.log('🚀 ~ file: TableList.vue ~ line 220 ~ data ~ queryParam', queryParam)
+        console.log('🚀 ~ file: TableList.vue ~ line 220 ~ data ~ parameter', parameter)
+        // moment(final).format('YYYY-MM-DD HH:mm')
         const requestParameters = Object.assign({}, parameter, this.queryParam)
         console.log('loadData request parameters:', requestParameters)
         return getServiceList(requestParameters).then((res) => {
@@ -272,7 +276,8 @@ export default {
           setting: true // 列设置
         },
         submitText: '查询1',
-        resetText: '重置2'
+        resetText: '重置2',
+        filterType: 'light'
       }
     }
   },
