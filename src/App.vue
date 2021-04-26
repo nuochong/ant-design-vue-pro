@@ -1,8 +1,8 @@
 <template>
   <a-config-provider :locale="locale">
     <div id="app" class="app">
-      <div class="inner-spin"><a-spin size="large"></a-spin></div>
       <router-view/>
+      <div class="inner-spin"><a-spin size="large"></a-spin></div>
     </div>
   </a-config-provider>
 </template>
