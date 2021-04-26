@@ -1,8 +1,8 @@
 <template>
   <a-config-provider :locale="locale">
     <div id="app" class="app">
-      <router-view/>
       <div class="inner-spin"><a-spin size="large"></a-spin></div>
+      <router-view/>
     </div>
   </a-config-provider>
 </template>
@@ -21,7 +21,6 @@ export default {
       // 只是为了切换语言时，更新标题
       const { title } = this.$route.meta
       title && (setDocumentTitle(`${i18nRender(title)} - ${domTitle}`))
-
       return this.$i18n.getLocaleMessage(this.$store.getters.lang).antLocale
     }
   }
@@ -34,6 +33,7 @@ export default {
     margin-top: 100px;
     width: 100%;
     text-align: center;
+    z-index:-1;
   }
   #app.app {
     background-image: none;
