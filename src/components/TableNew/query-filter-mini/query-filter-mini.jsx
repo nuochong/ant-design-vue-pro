@@ -71,24 +71,25 @@ const QueryFilterMini = {
     // const proFormText = (item) => {
     //   return <a-input v-model={this.queryParam[item.dataIndex]} placeholder={this.$t('tableForm.inputPlaceholder')} />
     // }
+
     const proFormNumber = (item) => {
       return <a-input-number v-model={this.queryParam[item.dataIndex]} class="search-input" placeholder={this.$t('tableForm.inputPlaceholder')} />
     }
 
     const change = (data, item, oldData) => {
-    //   this.queryParamState[item.dataIndex] = false
-    //   this.$nextTick(() => {
-    //     this.queryParamState[item.dataIndex] = true
-    // })
+      //   this.queryParamState[item.dataIndex] = false
+      //   this.$nextTick(() => {
+      //     this.queryParamState[item.dataIndex] = true
+      // })
       // this.queryParamState[item.dataIndex] = true
-    console.log('🚀 ~ file: query-filter-mini.jsx ~ line 58 ~ change ~ data', data, oldData)
+      console.log('🚀 ~ file: query-filter-mini.jsx ~ line 58 ~ change ~ data', data, oldData)
     }
 
     const proFormDatePicker = (item) => {
       return <div style="max-width:280px" class="data-picker">
         <a-date-picker
-        onChange={(data) => { change(data, item, this.queryParam[item.dataIndex]) }} dropdownClassName={'table-picker-wrap'} type="data" style="width: 280px" onOk={() => { this.queryParamState[item.dataIndex] = false; this.pickerChange() }} open={this.queryParamState[item.dataIndex]} show-time v-model={this.queryParam[item.dataIndex]} placeholder={this.$t('tableForm.selectPlaceholder')} class="search-input" />
-        </div>
+          onChange={(data) => { change(data, item, this.queryParam[item.dataIndex]) }} dropdownClassName={'table-picker-wrap'} type="data" style="width: 280px" onOk={() => { this.queryParamState[item.dataIndex] = false; this.pickerChange() }} open={this.queryParamState[item.dataIndex]} show-time v-model={this.queryParam[item.dataIndex]} placeholder={this.$t('tableForm.selectPlaceholder')} class="search-input" />
+      </div>
     }
 
     // const proFormSelect = (item) => {
@@ -106,30 +107,30 @@ const QueryFilterMini = {
       console.log('🚀 ~ file: query-filter-mini.jsx ~ line 71 ~ proFormSelectNew ~ item', item)
       const menuItem = Object.keys(item.valueEnum).map(child => {
         return <a-menu-item key={item.valueEnum[child].status} onClick={() => { this.changeMenuItem(item.dataIndex, item.valueEnum[child]); this.pickerChange() }} style="width:153px">
-        {item.valueEnum[child].text}
-      </a-menu-item>
+          {item.valueEnum[child].text}
+        </a-menu-item>
       })
       return <a-menu slot="overlay" selectable selectedKeys={[this.queryParam[item.dataIndex]]}>
-      {menuItem}
-    </a-menu>
+        {menuItem}
+      </a-menu>
     }
 
     const proFormTextNew = (item) => {
       return <div class="ant-pro-core-field-dropdown-overlay">
-      <div class="ant-pro-core-field-dropdown-content">
-        <div class="ant-pro-field-light-wrapper-container">
-          <a-input ref="getValue" placeholder={this.$t('tableForm.inputPlaceholder')} allowClear />
+        <div class="ant-pro-core-field-dropdown-content">
+          <div class="ant-pro-field-light-wrapper-container">
+            <a-input ref="getValue" v-model={this.queryParam[item.dataIndex]} placeholder={this.$t('tableForm.inputPlaceholder')} allowClear />
+          </div>
+        </div>
+        <div class="ant-pro-core-dropdown-footer">
+          <a-button type="link" size="small" style="visibility: visible;" onClick={() => { this.queryParam[item.dataIndex] = '' }}>
+            {this.$t('form.lightFilter.clear')}
+          </a-button>
+          <a-button type="primary" size="small" onClick={() => { this.handleMenuClick(item.dataIndex) }}>
+            {this.$t('form.lightFilter.confirm')}
+          </a-button>
         </div>
       </div>
-      <div class="ant-pro-core-dropdown-footer">
-        <a-button type="link" size="small" style="visibility: visible;" onClick={() => { this.queryParam[item.dataIndex] = '' }}>
-          {this.$t('form.lightFilter.clear')}
-        </a-button>
-        <a-button type="primary" size="small" onClick={() => { this.handleMenuClick(item.dataIndex) }}>
-          {this.$t('form.lightFilter.confirm')}
-        </a-button>
-      </div>
-    </div>
     }
 
     const formTypeMap = {
@@ -144,47 +145,47 @@ const QueryFilterMini = {
     const filterItem = this.columns.map((item) => {
       console.log('🚀 ~ file: query-filter-mini.jsx ~ line 108 ~ filterItem ~ item', item)
       if (item?.dataIndex) {
-      let label = item.title || item.titleOld
-      if (item.tip) {
-        label = labelTip(h, item)
-      }
-
-      const itemValue = this.queryParam[item.dataIndex]
-      const itemState = itemValue
-
-      const activeClass = [
-        'ant-pro-core-field-label',
-        'ant-pro-core-field-label-middle',
-        'ant-pro-core-field-label-allow-clear',
-        itemState ? 'ant-pro-core-field-label-active' : ''
-      ]
-
-      const iconClose = <a-icon type="close" class="ant-pro-core-field-label-icon ant-pro-core-field-label-close" onClick={(e) => { e.stopPropagation(); this.queryParam[item.dataIndex] = '' }}/>
-      const iconDown = <a-icon type="down" class="ant-pro-core-field-label-icon ant-pro-core-field-label-arrow" />
-      const content = formTypeMap[item.valueType]
-      console.log('🚀 ~ file: query-filter-mini.jsx ~ line 125 ~ filterItem ~ item.valueType', item.valueType)
-      console.log('🚀 ~ file: query-filter-mini.jsx ~ line 125 ~ filterItem ~ content', content)
-
-      let titleTemp
-      if (itemState) {
-        if (item.valueType === 'option') {
-          Object.keys(item.valueEnum).some(key => {
-            if (item.valueEnum[key].status === this.queryParam[item.dataIndex]) {
-              titleTemp = item.valueEnum[key].text
-              return true
-            } else {
-              return false
-            }
-          })
-        } else {
-          titleTemp = this.queryParam[item.dataIndex]
+        let label = item.title || item.titleOld
+        if (item.tip) {
+          label = labelTip(h, item)
         }
-      }
 
-      const title = itemState && titleTemp
-      const titleContent = itemState && `: ${titleTemp}`
+        const itemValue = this.queryParam[item.dataIndex]
+        const itemState = itemValue
 
-      return <div class="ant-pro-form-light-filter-item">
+        const activeClass = [
+          'ant-pro-core-field-label',
+          'ant-pro-core-field-label-middle',
+          'ant-pro-core-field-label-allow-clear',
+          itemState ? 'ant-pro-core-field-label-active' : ''
+        ]
+
+        const iconClose = <a-icon type="close" class="ant-pro-core-field-label-icon ant-pro-core-field-label-close" onClick={(e) => { e.stopPropagation(); this.queryParam[item.dataIndex] = '' }} />
+        const iconDown = <a-icon type="down" class="ant-pro-core-field-label-icon ant-pro-core-field-label-arrow" />
+        const content = formTypeMap[item.valueType]
+        console.log('🚀 ~ file: query-filter-mini.jsx ~ line 125 ~ filterItem ~ item.valueType', item.valueType)
+        console.log('🚀 ~ file: query-filter-mini.jsx ~ line 125 ~ filterItem ~ content', content)
+
+        let titleTemp
+        if (itemState) {
+          if (item.valueType === 'option') {
+            Object.keys(item.valueEnum).some(key => {
+              if (item.valueEnum[key].status === this.queryParam[item.dataIndex]) {
+                titleTemp = item.valueEnum[key].text
+                return true
+              } else {
+                return false
+              }
+            })
+          } else {
+            titleTemp = this.queryParam[item.dataIndex]
+          }
+        }
+
+        const title = itemState && titleTemp
+        const titleContent = itemState && `: ${titleTemp}`
+
+        return <div class="ant-pro-form-light-filter-item">
           <div class="ant-row ant-form-item" class={{ 'ant-form-item-has-success': itemState }}>
             <div class="ant-col ant-form-item-control">
               <div class="ant-form-item-control-input">

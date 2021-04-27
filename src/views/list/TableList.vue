@@ -196,10 +196,10 @@ const columns = [
   },
   {
     title: '操作',
-    dataIndex: 'action',
+    // dataIndex: 'action',
     width: '150px',
-    scopedSlots: { customRender: 'action' },
-    valueType: 'dateTime'
+    scopedSlots: { customRender: 'action' }
+    // valueType: 'option' // 此处添加 valueType const proFormSelect = (item) => 报错
   }
 ]
 

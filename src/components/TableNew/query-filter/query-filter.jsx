@@ -123,13 +123,17 @@ const QueryFilter = {
     }
   },
   computed: {
+    columnsFilter () {
+      return this.columns.filter(item => item.dataIndex)
+    },
     topArr () {
       const endNum = this.rowInputNumber > 1 ? this.rowInputNumber - 1 : 1
-      return this.columns.slice(0, endNum)
+      // 只需要有内容的列
+      return this.columnsFilter.slice(0, endNum)
     },
     bottomArr () {
       const endNum = this.rowInputNumber > 1 ? this.rowInputNumber - 1 : 1
-      return this.columns.slice(endNum)
+      return this.columnsFilter.slice(endNum)
     }
   },
   methods: {
@@ -226,8 +230,9 @@ const QueryFilter = {
           label = labelTip(h, item)
         }
 
+        // 若 valueType 未指定，则默认渲染内容为空
         const content = formTypeMap[item.valueType]
-        return !item.hideInSearch && <a-col {...{ props: { ...this.baseLayout } } }>
+        return !item.hideInSearch && content && <a-col {...{ props: { ...this.baseLayout } } }>
           <a-form-model-item prop={item.dataIndex} rules={item?.formItemProps?.rules || {}} labelCol={{ flex: '0 0 120px' }}>
             <span slot="label">
               {label}
