@@ -104,6 +104,7 @@
 
 <script>
 import TableListNew from '@/components/TableNew/TableListNew'
+import TableDropdown from '@/components/TableNew/table-dropdown'
 import { getRoleList, getServiceList } from '@/api/manage'
 import StepByStepModal from '@/views/list/modules/StepByStepModal'
 import CreateForm from '@/views/list/modules/CreateForm'
@@ -119,100 +120,118 @@ const validatePass = (rule, value, callback) => {
     callback()
   }
 }
-const columns = [
-  {
-    title: '#',
-    dataIndex: '#',
-    scopedSlots: { customRender: 'serial' },
-    valueType: 'text'
-  },
-  {
-    title: '规则名称',
-    dataIndex: 'description',
-    tip: '规则名称是唯一的 key',
-    copyable: true, // 是否支持复制
-    ellipsis: true, // 是否自动缩略
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '规则名称为必填项',
-          trigger: 'change'
-        }
-      ]
-    },
-    // scopedSlots: { customRender: 'name' },
-    valueType: 'text',
-    hideInSearch: false
-  },
-  {
-    title: '规则编号',
-    dataIndex: 'no',
-    valueType: 'text',
-    hideInSearch: false,
-    formItemProps: {
-      rules: { validator: validatePass, trigger: 'change' }
-    }
-  },
-  // {
-  //   title: '描述',
-  //   dataIndex: 'description',
-  //   ellipsis: true,
-  // },
-  {
-    title: '服务调用次数',
-    tip: '规则名称是唯一的 key',
-    dataIndex: 'callNo',
-    sorter: true,
-    needTotal: true,
-    valueType: 'text',
-    customRender: (text) => text + ' 次',
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '服务调用次数为必填项',
-          trigger: 'change'
-        }
-      ]
-    }
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    valueType: 'option',
-    valueEnum: {
-      0: { text: '关闭', status: 'default' },
-      1: { text: '运行中', status: 'processing' },
-      2: { text: '已上线', status: 'success' },
-      3: { text: '异常', status: 'error' }
-    }
-  },
-  {
-    title: '更新时间',
-    dataIndex: 'updatedAt',
-    sorter: true,
-    valueType: 'dateTime'
-  },
-  {
-    title: '操作',
-    // dataIndex: 'action',
-    width: '150px',
-    scopedSlots: { customRender: 'action' }
-    // valueType: 'option' // 此处添加 valueType const proFormSelect = (item) => 报错
-  }
-]
 
 export default {
   name: 'TableList',
   components: {
     TableListNew,
     CreateForm,
-    StepByStepModal
+    StepByStepModal,
+    TableDropdown
   },
   data () {
     return {
-      columns,
+      columns: [
+      {
+        title: '#',
+        dataIndex: '#',
+        scopedSlots: { customRender: 'serial' },
+        valueType: 'text'
+      },
+      {
+        title: '规则名称',
+        dataIndex: 'description',
+        tip: '规则名称是唯一的 key',
+        copyable: true, // 是否支持复制
+        ellipsis: true, // 是否自动缩略
+        formItemProps: {
+          rules: [
+            {
+              required: true,
+              message: '规则名称为必填项',
+              trigger: 'change'
+            }
+          ]
+        },
+        // scopedSlots: { customRender: 'name' },
+        valueType: 'text',
+        hideInSearch: false
+      },
+      {
+        title: '规则编号',
+        dataIndex: 'no',
+        valueType: 'text',
+        hideInSearch: false,
+        formItemProps: {
+          rules: { validator: validatePass, trigger: 'change' }
+        }
+      },
+      // {
+      //   title: '描述',
+      //   dataIndex: 'description',
+      //   ellipsis: true,
+      // },
+      {
+        title: '服务调用次数',
+        tip: '规则名称是唯一的 key',
+        dataIndex: 'callNo',
+        sorter: true,
+        needTotal: true,
+        valueType: 'text',
+        customRender: (text) => text + ' 次',
+        formItemProps: {
+          rules: [
+            {
+              required: true,
+              message: '服务调用次数为必填项',
+              trigger: 'change'
+            }
+          ]
+        }
+      },
+      {
+        title: '状态',
+        dataIndex: 'status',
+        valueType: 'option',
+        valueEnum: {
+          0: { text: '关闭', status: 'default' },
+          1: { text: '运行中', status: 'processing' },
+          2: { text: '已上线', status: 'success' },
+          3: { text: '异常', status: 'error' }
+        }
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updatedAt',
+        sorter: true,
+        valueType: 'dateTime'
+      },
+      {
+        title: '操作',
+        // dataIndex: 'action',
+        // width: '150px',
+        valueType: 'option',
+        customRender: (text) => [
+          <a key="link">链路</a>,
+          <a key="link2">报警</a>,
+          <a key="link3">监控</a>,
+          <TableDropdown
+            key="actionGroup"
+            menus={[
+              // { key: 'copy', name: '复制', onSelect: this.tableDropdownCopy },
+              // { key: 'delete', name: '删除', onSelect: this.tableDropdownCopy }
+              { key: 'copy', name: '复制' },
+              { key: 'delete', name: '删除' }
+            ]}
+            class="bbb"
+            btnstyle="color:red"
+            select={this.tableDropdownCopy}
+          />
+        ]
+        // scopedSlots: { customRender: 'action' }
+        // valueType: 'option' // 此处添加 valueType const proFormSelect = (item) => 报错
+      }
+    ],
       // 查询参数
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
@@ -249,24 +268,42 @@ export default {
         collapseRender: true,
         optionRender: (searchConfig, formProps) => {
           console.log('自定搜索栏', searchConfig, formProps)
-          return <span>
-            <a-button type="primary" onClick={() => { formProps.submit() }}>{searchConfig.submitText }</a-button>
-            <a-button style="margin-left: 8px" onClick={() => { formProps.resetFields() }}>{searchConfig.resetText}</a-button>
-            <a-button style="margin-left: 8px" >导出</a-button>
-          </span>
+          return (
+            <span>
+              <a-button
+                type="primary"
+                onClick={() => {
+                  formProps.submit()
+                }}
+              >
+                {searchConfig.submitText}
+              </a-button>
+              <a-button
+                style="margin-left: 8px"
+                onClick={() => {
+                  formProps.resetFields()
+                }}
+              >
+                {searchConfig.resetText}
+              </a-button>
+              <a-button style="margin-left: 8px">导出</a-button>
+            </span>
+          )
         },
         tableExtraRender: (props) => {
-          return <a-card class="card-margin">
-            <a-descriptions size="small" column={3}>
-              <a-descriptions-item label="Row">2</a-descriptions-item>
-              <a-descriptions-item label="Created">Lili Qu</a-descriptions-item>
-              <a-descriptions-item label="Association">
-                <a>421421</a>
-              </a-descriptions-item>
-              <a-descriptions-item label="Creation Time">2017-01-10</a-descriptions-item>
-              <a-descriptions-item label="Effective Time">2017-10-10</a-descriptions-item>
-            </a-descriptions>
-          </a-card>
+          return (
+            <a-card class="card-margin">
+              <a-descriptions size="small" column={3}>
+                <a-descriptions-item label="Row">2</a-descriptions-item>
+                <a-descriptions-item label="Created">Lili Qu</a-descriptions-item>
+                <a-descriptions-item label="Association">
+                  <a>421421</a>
+                </a-descriptions-item>
+                <a-descriptions-item label="Creation Time">2017-01-10</a-descriptions-item>
+                <a-descriptions-item label="Effective Time">2017-10-10</a-descriptions-item>
+              </a-descriptions>
+            </a-card>
+          )
         },
         options: {
           intervalTexture: true, // 斑马线
@@ -283,6 +320,9 @@ export default {
   },
   mounted () {},
   methods: {
+    tableDropdownCopy ({ item, key, keyPath }) {
+      console.log('点击了tableDropDown', item, key, keyPath)
+    },
     handleAdd () {
       this.mdl = null
       this.visible = true

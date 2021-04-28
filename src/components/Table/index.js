@@ -130,6 +130,7 @@ export default {
     this.needTotalList = this.initTotalList(this.columns)
     this.columns.map((item, index) => {
       const { valueEnum, ellipsis, copyable, sorter, tip, sortOrder } = item
+      const { customRender } = item
       if (tip && sorter) {
         item.sortOrderOld = !sortOrder ? 'ascend' : sortOrder // 'descend'
         item.scopedSlots = { ...item.scopedSlots, title: `custom-sorter-tip-${index}` }
@@ -158,6 +159,16 @@ export default {
         item.scopedSlots = { ...item.scopedSlots, customRender: 'custom-ellipsis' }
       } else if (copyable) {
         item.scopedSlots = { ...item.scopedSlots, customRender: 'custom-copyable' }
+      }
+      // 检测数组模板并处理
+      if (customRender && customRender instanceof Function) {
+        const customRenderArr = customRender()
+        if (customRenderArr instanceof Array) {
+          const customRenderChange = () => {
+            return <a-space size="small">{customRenderArr}</a-space>
+          }
+          item.customRender = customRenderChange
+        }
       }
 
       return item
