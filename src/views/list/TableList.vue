@@ -225,7 +225,7 @@ export default {
             ]}
             class="bbb"
             btnstyle="color:red"
-            select={this.tableDropdownCopy}
+            btnSelect={this.tableDropdownCopy}
           />
         ]
         // scopedSlots: { customRender: 'action' }
@@ -320,6 +320,14 @@ export default {
   },
   mounted () {},
   methods: {
+    onOpenChange (openKeys) {
+      const latestOpenKey = openKeys.find(key => this.openKeys.indexOf(key) === -1)
+      if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+        this.openKeys = openKeys
+      } else {
+        this.openKeys = latestOpenKey ? [latestOpenKey] : []
+      }
+    },
     tableDropdownCopy ({ item, key, keyPath }) {
       console.log('点击了tableDropDown', item, key, keyPath)
     },

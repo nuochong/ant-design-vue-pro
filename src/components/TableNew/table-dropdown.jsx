@@ -8,11 +8,11 @@ const WrapContentProps = {
   menus: PropTypes.array,
   className: PropTypes.string,
   btnStyle: PropTypes.string,
-  select: PropTypes.any
+  btnSelect: PropTypes.any
 }
 
-const CircleTip = {
-  name: 'CircleTip',
+const TableDropdown = {
+  name: 'TableDropdown',
   props: WrapContentProps,
   data () {
     return {
@@ -27,11 +27,11 @@ const CircleTip = {
       menus,
       className,
       btnStyle,
-      select
+      btnSelect
     } = this.$props
 
     const menuItem = menus.map((item) => {
-      return <a-menu-item key={item.key} >
+      return <a-menu-item key={item.key}>
         {/* <a href="javascript:;" onClick={() => { item.onSelect() }}>{item.name}</a> */}
         <a href="javascript:;">{item.name}</a>
       </a-menu-item>
@@ -41,12 +41,14 @@ const CircleTip = {
         <a class="ant-dropdown-link ant-pro-multi-tab-dropdown-menu-btn" href="javascript:;" style={btnStyle}>
           <a-icon type="ellipsis" />
         </a>
-        <a-menu slot="overlay" {...{ on: { click: (data) => { select(data) } } }}>
-          {menuItem}
-        </a-menu>
+        <template class="table-drop-down-wrap" slot="overlay">
+          <a-menu {...{ on: { click: (data) => { btnSelect(data) } } }}>
+            {menuItem}
+          </a-menu>
+        </template>
       </a-dropdown>
     )
   }
 }
 
-export default CircleTip
+export default TableDropdown
